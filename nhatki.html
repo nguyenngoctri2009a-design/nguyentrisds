@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Ký Tình Yêu</title>
+    <meta name="description" content="Nhật ký tình yêu - Ghi lại kỷ niệm đẹp">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/nhatki.css">
+    
+    <style>
+        body { 
+            background: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overlay {
+            background: linear-gradient(180deg,
+                rgba(10, 10, 20, 0.92) 0%,
+                rgba(20, 5, 35, 0.88) 50%,
+                rgba(10, 10, 20, 0.92) 100%
+            );
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div id="header-placeholder"></div>
+    
+    <div class="timeline-container">
+        <div class="page-title">
+            <h2>📖 Dòng Thời Gian Kỷ Niệm</h2>
+            <p>Ghi lại những khoảnh khắc đẹp nhất</p>
+        </div>
+
+        <div class="partner-banner" id="diary-partner-banner"></div>
+        
+        <form class="diary-form" onsubmit="handleDiarySubmit(event)">
+            <textarea id="diary-content" rows="3" placeholder="Hôm nay hai đứa mình có gì vui, kể lại nào..." required></textarea>
+            <div class="form-bottom">
+                <label class="file-upload-label">
+                    📷 Chọn ảnh kỷ niệm
+                    <input type="file" id="diary-image" accept="image/*" onchange="showDiaryFile(this)">
+                </label>
+                <button type="submit" class="btn-diary">Lưu Kỷ Niệm 📸</button>
+            </div>
+            <div class="file-name-display" id="diary-file-name"></div>
+        </form>
+
+        <div id="diary-list"></div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/diary.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        Auth.requireAuth();
+
+        const currentUser = Auth.getCurrentUser();
+
+        // Set background from config
+        const config = DB.getConfig();
+        document.body.style.backgroundImage = `url('${config.anh_nen}')`;
+
+        // Render diary entries
+        Diary.render('diary-list');
+
+        (function renderPartnerBanner() {
+            const banner = document.getElementById('diary-partner-banner');
+            if (!banner || !currentUser) return;
+
+            const linked = DB.getLinkedPartner(currentUser.uid);
+            const outgoingUid = DB.getOutgoingPartnerRequest(currentUser.uid);
+            const incoming = DB.getIncomingPartnerRequests(currentUser.uid);
+
+            if (linked) {
+                banner.className = 'partner-banner is-linked';
+                banner.innerHTML = `💞 Nhật ký chung với <b>${linked.username}</b> <span class="tag">#${linked.uid}</span>`;
+                return;
+            }
+
+            if (incoming && incoming.length > 0) {
+                const fromUid = incoming[0].from;
+                banner.className = 'partner-banner is-waiting';
+                banner.innerHTML = `📩 Có lời mời kết nối từ <span class="tag">#${fromUid}</span> • <a href="setting.html">Mở cài đặt</a>`;
+                return;
+            }
+
+            if (outgoingUid) {
+                banner.className = 'partner-banner is-waiting';
+                banner.innerHTML = `⏳ Đã gửi lời mời đến <span class="tag">#${outgoingUid}</span> • <a href="setting.html">Mở cài đặt</a>`;
+                return;
+            }
+
+            banner.className = 'partner-banner';
+            banner.innerHTML = `🔒 Nhật ký riêng (chỉ bạn thấy) • <a href="setting.html">Kết nối ID người yêu</a>`;
+        })();
+
+        function showDiaryFile(input) {
+            const name = input.files[0] ? input.files[0].name : '';
+            document.getElementById('diary-file-name').textContent = name ? '📎 ' + name : '';
+        }
+
+        async function handleDiarySubmit(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('diary-content').value;
+            const imageFile = document.getElementById('diary-image').files[0] || null;
+
+            const btn = e.target.querySelector('.btn-diary');
+            btn.textContent = 'Đang lưu...';
+            btn.disabled = true;
+
+            const result = await Diary.addEntry(content, imageFile);
+            
+            if (result.success) {
+                showToast(result.message, 'success');
+                document.getElementById('diary-content').value = '';
+                document.getElementById('diary-image').value = '';
+                document.getElementById('diary-file-name').textContent = '';
+                Diary.render('diary-list');
+            } else {
+                showToast(result.message, 'error');
+            }
+
+            btn.textContent = 'Lưu Kỷ Niệm 📸';
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

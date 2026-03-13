@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Đếm Ngày Yêu</title>
+    <meta name="description" content="Đếm ngày yêu - Xem chúng mình đã bên nhau bao lâu rồi">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <style>
+        body { 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+        }
+
+        .overlay {
+            background: linear-gradient(135deg,
+                rgba(10, 10, 20, 0.88) 0%,
+                rgba(30, 10, 40, 0.82) 50%,
+                rgba(10, 10, 20, 0.88) 100%
+            );
+        }
+
+        .home-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            padding: 40px 20px;
+            gap: 10px;
+        }
+
+        /* Couple Section */
+        .couple-section {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .person { text-align: center; }
+
+        .avt-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .avt-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+        .avt-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: var(--gradient-love);
+            z-index: 1;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .avt-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 129, 0.2) 0%, transparent 70%);
+            z-index: 0;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        .name-tag {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 14px;
+            background: var(--gradient-sunset);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .heart-center {
+            font-size: 3.5rem;
+            animation: pulseGlow 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 60, 0.6));
+        }
+
+        .love-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff, var(--pink-200));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            animation: fadeIn 1.2s ease forwards;
+            opacity: 0;
+            animation-delay: 0.3s;
+        }
+
+        /* Timer */
+        .timer-grid {
+            display: flex;
+            gap: 16px;
+            animation: fadeIn 1.4s ease forwards;
+            opacity: 0;
+            animation-delay: 0.5s;
+        }
+
+        .time-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            text-align: center;
+            min-width: 100px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition-base);
+        }
+
+        .time-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--gradient-love);
+            opacity: 0.6;
+        }
+
+        .time-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .time-card .number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .time-card .label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .couple-section { gap: 25px; }
+            .avt-circle { width: 90px; height: 90px; }
+            .name-tag { font-size: 1.1rem; }
+            .heart-center { font-size: 2.5rem; }
+            .love-title { font-size: 1.8rem; }
+            .timer-grid { gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .time-card { min-width: 80px; padding: 16px 20px; }
+            .time-card .number { font-size: 2.2rem; }
+            .time-card .label { font-size: 0.75rem; letter-spacing: 1.5px; }
+        }
+
+        @media (max-width: 480px) {
+            .couple-section { gap: 15px; }
+            .avt-circle { width: 75px; height: 75px; }
+            .avt-wrapper::before { inset: -3px; }
+            .avt-wrapper::after { inset: -10px; }
+            .name-tag { font-size: 0.95rem; }
+            .heart-center { font-size: 2rem; }
+            .love-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="floating-hearts" id="floating-hearts"></div>
+
+    <div id="header-placeholder"></div>
+
+    <div class="home-container">
+        <div class="couple-section">
+            <div class="person">
+                <div class="avt-wrapper">
+                    <img id="avt-nam" src="https://i.imgur.com/6VBx3io.png" class="avt-circle" alt="Avatar Nam">
+                </div>
+                <div class="name-tag" id="name-nam">Chàng Trai</div>
+            </div>
+            
+            <div class="heart-center">❤️</div>
+            
+            <div class="person">
+                <div class="avt-wrapper">
+                    <img id="avt-nu" src="https://i.imgur.com/6VBx3io.png" class="avt-circle" alt="Avatar Nữ">
+                </div>
+                <div class="name-tag" id="name-nu">Cô Gái</div>
+            </div>
+        </div>
+
+        <div class="love-title">Chúng mình đã bên nhau</div>
+
+        <div class="timer-grid">
+            <div class="time-card">
+                <span class="number" id="days">0</span>
+                <span class="label">Ngày</span>
+            </div>
+            <div class="time-card">
+                <span class="number" id="hours">00</span>
+                <span class="label">Giờ</span>
+            </div>
+            <div class="time-card">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Phút</span>
+            </div>
+            <div class="time-card">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Giây</span>
+            </div>
+        </div>
+
+        <!-- Bản đồ cặp đôi -->
+        <div id="map-section" class="glass-card map-section" style="display: none; width: 100%; max-width: 800px; height: 350px; margin-top: 20px; padding: 10px; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 15px; left: 15px; z-index: 1000; background: rgba(0,0,0,0.6); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white;">📍 Bản Đồ Cặp Đôi</div>
+            <div id="map-status" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem; width: 80%;">
+                <p>Đang xác định vị trí...</p>
+                <p style="font-size: 0.75rem; margin-top: 5px;">(Hãy đảm bảo cả hai đã cho phép truy cập vị trí)</p>
+            </div>
+            <div id="couple-map" style="width: 100%; height: 100%; border-radius: 12px; z-index: 1;"></div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/timer.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        // Bảo vệ trang
+        Auth.requireAuth();
+
+        // Load config & hiển thị
+        const config = DB.getConfig();
+        const currentUser = Auth.getCurrentUser();
+
+        // Set background
+        if (config.anh_nen) {
+            document.body.style.backgroundImage = `url('${config.anh_nen}')`;
+        }
+
+        // Set names
+        document.getElementById('name-nam').textContent = config.ten_nam;
+        document.getElementById('name-nu').textContent = config.ten_nu;
+
+        // Load avatar từ config
+        if (config.avt_nam) {
+            document.getElementById('avt-nam').src = config.avt_nam;
+        }
+        if (config.avt_nu) {
+            document.getElementById('avt-nu').src = config.avt_nu;
+        }
+
+        // Start timer
+        LoveTimer.start(config.ngay_bat_dau);
+
+        // Floating hearts
+        createFloatingHearts('floating-hearts', 12);
+
+        // Map logic
+        let map = null;
+        let markers = {};
+
+        function initCoupleMap() {
+            if (!currentUser) return;
+            const partner = DB.getLinkedPartner(currentUser.uid);
+            if (!partner) return;
+
+            const mapSection = document.getElementById('map-section');
+            mapSection.style.display = 'block';
+
+            const myLoc = DB.getUserLocation(currentUser.uid);
+            const partnerLoc = DB.getUserLocation(partner.uid);
+
+            // Initialize map if not exists
+            if (!map) {
+                const initialLat = myLoc ? myLoc.lat : (partnerLoc ? partnerLoc.lat : 21.0285);
+                const initialLng = myLoc ? myLoc.lng : (partnerLoc ? partnerLoc.lng : 105.8542);
+
+                map = L.map('couple-map').setView([initialLat, initialLng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            // Update markers
+            updateMarkers(myLoc, partnerLoc, partner);
+        }
+
+        function updateMarkers(myLoc, partnerLoc, partner) {
+            if (!map) return;
+
+            const points = [];
+            const myRole = currentUser.role;
+            const partnerRole = partner.role;
+            const status = document.getElementById('map-status');
+
+            if (myLoc || partnerLoc) {
+                if (status) status.style.display = 'none';
+            }
+
+            // My marker
+            if (myLoc) {
+                const myLabel = myRole === 'nam' ? 'Vị trí của Bạn (Nam)' : (myRole === 'nu' ? 'Vị trí của Bạn (Nữ)' : 'Bạn đang ở đây');
+                if (!markers.me) {
+                    const myIcon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div style="background-image: url('${getRealAvatar(currentUser)}'); background-size: cover; width: 40px; height: 40px; border-radius: 50%; border: 3px solid #ff4757; box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);"></div>`,
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
+                    });
+                    markers.me = L.marker([myLoc.lat, myLoc.lng], { icon: myIcon }).addTo(map).bindPopup(myLabel);
+                } else {
+                    markers.me.setLatLng([myLoc.lat, myLoc.lng]);
+                    markers.me.getPopup().setContent(myLabel);
+                }
+                points.push([myLoc.lat, myLoc.lng]);
+            }
+
+            // Partner marker
+            if (partnerLoc) {
+                const partnerLabel = partnerRole === 'nam' ? `Vị trí của Bạn Nam (${partner.username})` : (partnerRole === 'nu' ? `Vị trí của Bạn Nữ (${partner.username})` : `${partner.username} đang ở đây`);
+                if (!markers.partner) {
+                    const partnerIcon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div style="background-image: url('${getRealAvatar(partner)}'); background-size: cover; width: 40px; height: 40px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"></div>`,
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
+                    });
+                    markers.partner = L.marker([partnerLoc.lat, partnerLoc.lng], { icon: partnerIcon }).addTo(map).bindPopup(partnerLabel);
+                } else {
+                    markers.partner.setLatLng([partnerLoc.lat, partnerLoc.lng]);
+                    markers.partner.getPopup().setContent(partnerLabel);
+                }
+                points.push([partnerLoc.lat, partnerLoc.lng]);
+            }
+
+            // Fit bounds if we have both points
+            if (points.length === 2) {
+                map.fitBounds(points, { padding: [50, 50] });
+            }
+        }
+
+        // Initialize and poll map
+        setTimeout(initCoupleMap, 1000);
+        setInterval(initCoupleMap, 10000);
+    </script>
+</body>
+</html>

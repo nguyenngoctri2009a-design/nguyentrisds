@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger - Đếm Ngày Yêu</title>
+    <meta name="description" content="Nhắn tin yêu thương - Đếm Ngày Yêu VIP">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/messenger.css">
+
+    <style>
+        body {
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="messenger-wrapper">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <h3>💬 Tin nhắn</h3>
+                    <div class="sidebar-sub">Bạn bè • Nhấn để trò chuyện</div>
+                </div>
+                <span class="my-id" id="my-id-badge">#</span>
+            </div>
+            <div class="sidebar-search">
+                <span class="search-ico">🔎</span>
+                <input id="user-search" type="text" placeholder="Tìm bạn theo tên..." autocomplete="off">
+            </div>
+            <div class="user-list" id="user-list">
+                <!-- Rendered by chat.js -->
+            </div>
+        </div>
+
+        <!-- Chat Area Container -->
+        <div class="chat-area-container">
+            <div class="chat-area" id="main-chat-area">
+                <!-- Active Chat Section (hidden by default) -->
+                <div id="chat-section" class="chat-section" style="display: none;">
+                    <div class="chat-header">
+                        <div class="header-left">
+                            <img id="chat-target-avt" src="https://i.imgur.com/6VBx3io.png" alt="Avt">
+                            <div class="chat-header-info">
+                                <h3 id="chat-target-name">Chọn người chat</h3>
+                                <div class="online-status">
+                                    <span class="online-dot"></span>
+                                    Đang hoạt động
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-right">
+                            <button class="icon-btn"
+                                onclick="if(typeof Call !== 'undefined') Call.startCall(Chat.currentChatUID, false)">📞</button>
+                            <button class="icon-btn"
+                                onclick="if(typeof Call !== 'undefined') Call.startCall(Chat.currentChatUID, true)">📹</button>
+                            <button class="icon-btn" onclick="toggleSettings()">ℹ️</button>
+                        </div>
+                    </div>
+
+                    <div class="chat-box" id="chat-box">
+                        <div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 40px;">
+                            <div style="font-size: 3rem; margin-bottom: 10px;"></div>
+                            <p>Hãy gửi tin nhắn đầu tiên nhé!</p>
+                        </div>
+                    </div>
+
+                    <div class="input-area" id="input-area">
+                        <button class="icon-btn hover-bg"
+                            onclick="document.getElementById('img-upload').click()">🖼️</button>
+                        <input type="file" id="img-upload" accept="image/*" style="display: none"
+                            onchange="Chat.handleImageSelect(event)">
+
+                        <button class="icon-btn hover-bg mic-btn" id="mic-btn"
+                            onclick="Chat.toggleRecordAudio()">🎤</button>
+
+                        <div class="input-wrapper">
+                            <input type="text" id="msg-input" placeholder="Aa" autocomplete="off">
+                            <button type="button" class="icon-btn emoji-btn"></button>
+                        </div>
+                        <button class="icon-btn send-btn" id="send-btn" onclick="handleSend()"><span id="send-btn-label">👍</span></button>
+                    </div>
+
+                    <!-- Blocked notice -->
+                    <div id="blocked-area" class="blocked-area" style="display: none;">
+                        <p>Bạn không thể trả lời cuộc trò chuyện này.</p>
+                    </div>
+                </div>
+
+                <!-- Empty state (shown by default) -->
+                <div id="empty-section" class="empty-chat">
+                    <div class="empty-inner">
+                        <div class="empty-icon">💬</div>
+                        <h3>Chọn một người để bắt đầu</h3>
+                        <p>Chọn bạn trong danh sách bên trái để xem và gửi tin nhắn.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Settings Panel -->
+            <div class="settings-panel" id="settings-panel">
+                <div class="panel-inner">
+                    <div class="panel-section text-center" style="margin-top: 20px;">
+                        <img id="panel-avt" src="https://i.imgur.com/6VBx3io.png" alt="">
+                        <h4 id="panel-name">Tên</h4>
+                    </div>
+
+                    <div class="panel-menu">
+                        <div class="menu-item" onclick="openThemeModal()">
+                            <span class="icon">🎨</span> Đổi chủ đề
+                        </div>
+                        <div class="menu-item text-red" onclick="Chat.toggleBlockUser()" id="block-btn-container">
+                            <span class="icon">🚫</span> <span id="block-btn-text">Chặn</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme Selection Modal -->
+            <div id="theme-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content theme-picker">
+                    <h3>Chọn Chủ Đề</h3>
+                    <div class="theme-list">
+                        <div class="theme-option" style="background: linear-gradient(to top right, #ff7b00, #ff0055);"
+                            onclick="Chat.changeTheme('linear-gradient(to top right, #ff7b00, #ff0055)')"></div>
+                        <div class="theme-option" style="background: linear-gradient(to bottom, #1e3c72, #2a5298);"
+                            onclick="Chat.changeTheme('linear-gradient(to bottom, #1e3c72, #2a5298)')"></div>
+                        <div class="theme-option" style="background: linear-gradient(to right, #8e2de2, #4a00e0);"
+                            onclick="Chat.changeTheme('linear-gradient(to right, #8e2de2, #4a00e0)')"></div>
+                        <div class="theme-option" style="background: linear-gradient(to right, #00c6ff, #0072ff);"
+                            onclick="Chat.changeTheme('linear-gradient(to right, #00c6ff, #0072ff)')"></div>
+                        <div class="theme-option" style="background: #18191a;" onclick="Chat.changeTheme('#18191a')">Tối
+                        </div>
+                        <div class="theme-option"
+                            style="background: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop'); background-size: cover; background-position: center;"
+                            onclick="Chat.changeTheme('url(\'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop\')')">
+                            VTrụ</div>
+                    </div>
+                    <button class="btn-cancel" onclick="closeThemeModal()" style="margin-top: 15px;">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- INCOMING CALL MODAL -->
+    <div id="incoming-call-modal" class="modal-overlay" style="display: none; z-index: 1000;">
+        <div class="modal-content call-ringer">
+            <img id="caller-avt" src="https://i.imgur.com/6VBx3io.png" alt="Caller Avatar" class="ringing-avt">
+            <h3 id="caller-name" style="color: #e4e6eb; margin-top: 15px;">Người gọi</h3>
+            <p style="color: #A8ABAF">Đang gọi <span id="call-type-text">cho bạn</span>...</p>
+
+            <div class="call-actions" style="margin-top: 25px; display: flex; justify-content: center; gap: 20px;">
+                <button class="icon-btn btn-decline" onclick="if(typeof Call !== 'undefined') Call.declineCall()"
+                    style="background: #ff4757; color: white; width: 50px; height: 50px; font-size: 1.5rem;">❌</button>
+                <button class="icon-btn btn-accept" onclick="if(typeof Call !== 'undefined') Call.acceptCall()"
+                    style="background: #2ed573; color: white; width: 50px; height: 50px; font-size: 1.5rem;"
+                    id="accept-btn-icon">📞</button>
+            </div>
+
+            <audio id="ringtone-audio" loop
+                src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3"></audio>
+        </div>
+    </div>
+
+    <!-- OUTGOING CALL SCREEN -->
+    <div id="outgoing-call-screen" class="outgoing-call-screen" style="display: none;">
+        <div class="outgoing-call-inner">
+            <div class="outgoing-avt-wrapper">
+                <div class="outgoing-avt-ring"></div>
+                <img id="outgoing-caller-avt" src="https://i.imgur.com/6VBx3io.png" alt="Avatar" class="outgoing-avt-img">
+            </div>
+            <h2 id="outgoing-caller-name" class="outgoing-name">Đang gọi...</h2>
+            <p id="outgoing-call-type" class="outgoing-type">📞 Cuộc gọi thoại</p>
+            <p class="outgoing-status" id="outgoing-status">Đang đổ chuông...</p>
+            
+            <div class="outgoing-actions">
+                <button class="outgoing-end-btn" onclick="if(typeof Call !== 'undefined') Call.endCall()">
+                    <span>📞</span>
+                </button>
+                <p class="outgoing-end-label">Hủy</p>
+            </div>
+        </div>
+        <audio id="outgoing-ringtone" loop
+            src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    </div>
+
+    <!-- ACTIVE CALL SCREEN (shown after connected) -->
+    <div id="active-call-screen" class="active-call-screen" style="display: none;">
+        <div class="video-container">
+            <video id="remote-video" autoplay playsinline></video>
+            <video id="local-video" autoplay playsinline muted class="local-video"></video>
+
+            <!-- Connected call info -->
+            <div class="active-call-info" id="active-call-info">
+                <img id="active-call-avt" src="https://i.imgur.com/6VBx3io.png" alt="Avatar" class="active-call-avt-img">
+                <h3 id="active-call-name" class="active-call-name-text"></h3>
+            </div>
+
+            <div class="call-controls">
+                <button class="call-btn btn-toggle-mic" id="btn-toggle-mic" onclick="if(typeof Call !== 'undefined') Call.toggleMic()" title="Tắt/Mở Mic">
+                    <span class="icon">🎙️</span>
+                </button>
+                
+                <button class="call-btn btn-end-call" onclick="if(typeof Call !== 'undefined') Call.endCall()" title="Kết thúc">
+                    <span class="icon">☎️</span>
+                </button>
+                
+                <button class="call-btn btn-toggle-video" id="btn-toggle-video" onclick="if(typeof Call !== 'undefined') Call.toggleVideo()" title="Tắt/Mở Camera">
+                    <span class="icon">📹</span>
+                </button>
+            </div>
+
+            <div class="call-status-text" id="active-call-status">00:00</div>
+        </div>
+    </div>
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/chat.js"></script>
+    <script src="assets/js/call.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        Auth.requireAuth();
+
+        const currentUser = Auth.getCurrentUser();
+
+        // Show UID badge
+        document.getElementById('my-id-badge').textContent = '#' + currentUser.uid;
+
+        // Render user list
+        Chat.renderUserList('user-list');
+
+        // Search filter
+        const searchInput = document.getElementById('user-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                if (typeof Chat.filterUserList === 'function') {
+                    Chat.filterUserList(searchInput.value);
+                }
+            });
+        }
+
+        // Check URL for ?chat_with=xxx
+        const params = new URLSearchParams(window.location.search);
+        const chatWithUID = params.get('chat_with');
+
+        if (chatWithUID) {
+            const targetUser = DB.findUserByUID(chatWithUID);
+            if (targetUser) {
+                Chat.currentChatUID = chatWithUID;
+
+                // Show chat section
+                document.getElementById('chat-section').style.display = 'flex';
+                document.getElementById('empty-section').style.display = 'none';
+
+                // Set header
+                document.getElementById('chat-target-name').textContent = targetUser.username;
+                if (typeof getRealAvatar === 'function') {
+                    document.getElementById('chat-target-avt').src = getRealAvatar(targetUser);
+                } else if (targetUser.avatar) {
+                    document.getElementById('chat-target-avt').src = targetUser.avatar;
+                }
+
+                const inputEl = document.getElementById('msg-input');
+                if (inputEl) inputEl.placeholder = `Nhắn tin cho ${targetUser.username}...`;
+
+                // Load messages & start polling
+                Chat.loadMessages();
+                Chat.startPolling();
+
+                // Update sidebar active state
+                Chat.renderUserList('user-list');
+            }
+        }
+
+        // Send message handler
+        function handleSend() {
+            const input = document.getElementById('msg-input');
+            const content = input.value;
+            let msg = content.trim() ? content.trim() : '👍';
+            if (Chat.send(msg, 'text')) {
+                input.value = '';
+                input.focus();
+                syncSendButton();
+            }
+        }
+
+        function syncSendButton() {
+            const input = document.getElementById('msg-input');
+            const btn = document.getElementById('send-btn');
+            const label = document.getElementById('send-btn-label');
+            if (!input || !btn || !label) return;
+
+            const hasText = (input.value || '').trim().length > 0;
+            btn.classList.toggle('has-text', hasText);
+            label.textContent = hasText ? 'Gửi' : '👍';
+        }
+
+        // Enter key to send
+        document.getElementById('msg-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleSend();
+            }
+        });
+
+        document.getElementById('msg-input').addEventListener('input', syncSendButton);
+        syncSendButton();
+
+        // UI Toggles
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('open');
+        }
+        function openThemeModal() {
+            document.getElementById('theme-modal').style.display = 'flex';
+        }
+        function closeThemeModal() {
+            document.getElementById('theme-modal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

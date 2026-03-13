@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cộng Đồng - Đếm Ngày Yêu</title>
+    <meta name="description" content="Cộng đồng chia sẻ - Đếm Ngày Yêu VIP">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        body { 
+            background: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overlay {
+            background: linear-gradient(180deg,
+                rgba(10, 10, 20, 0.92) 0%,
+                rgba(15, 10, 25, 0.88) 50%,
+                rgba(10, 10, 20, 0.92) 100%
+            );
+        }
+
+        .feed-container {
+            max-width: 620px;
+            margin: 30px auto;
+            padding: 0 15px 40px;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* === ID CARD + KẾT BẠN === */
+        .id-friend-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .my-id-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .my-id-card .id-avt {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--pink-400);
+        }
+
+        .my-id-card .id-info { flex: 1; }
+        .my-id-card .id-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .my-id-card .id-uid {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .my-id-card .id-uid span {
+            font-size: 0.8rem;
+            color: var(--pink-300);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .id-copy-btn {
+            background: rgba(255, 107, 129, 0.15);
+            border: none;
+            color: var(--pink-300);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 600;
+        }
+
+        .id-copy-btn:hover { background: rgba(255, 107, 129, 0.3); }
+
+        .add-friend-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 180px;
+        }
+
+        .add-friend-card label {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+
+        .add-friend-input {
+            display: flex;
+            gap: 6px;
+        }
+
+        .add-friend-input input {
+            flex: 1;
+            padding: 9px 14px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            margin: 0;
+            font-family: var(--font-main);
+            transition: var(--transition-fast);
+        }
+
+        .add-friend-input input:focus { border-color: var(--pink-400); }
+        .add-friend-input input::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+        .btn-add-friend {
+            padding: 9px 14px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-love);
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition-fast);
+            font-family: var(--font-main);
+            white-space: nowrap;
+        }
+
+        .btn-add-friend:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255, 107, 129, 0.3); }
+
+        /* === FRIEND REQUESTS - PREMIUM === */
+        .friend-requests-wrapper {
+            display: none;
+            background: linear-gradient(135deg, rgba(255, 107, 129, 0.08), rgba(147, 51, 234, 0.08));
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 107, 129, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 0;
+            margin-bottom: 24px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease forwards;
+            box-shadow: 0 8px 32px rgba(255, 107, 129, 0.1);
+        }
+
+        .req-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .req-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        .req-title .req-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b81, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
+        }
+
+        .req-count {
+            background: linear-gradient(135deg, #ff6b81, #ff3860);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: var(--radius-full);
+            min-width: 22px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(255, 56, 96, 0.4);
+            animation: pulseBadge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .requests-list {
+            padding: 8px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .request-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s ease;
+            animation: reqSlideIn 0.4s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .request-item:nth-child(1) { animation-delay: 0.05s; }
+        .request-item:nth-child(2) { animation-delay: 0.1s; }
+        .request-item:nth-child(3) { animation-delay: 0.15s; }
+        .request-item:nth-child(4) { animation-delay: 0.2s; }
+
+        @keyframes reqSlideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .request-item:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 107, 129, 0.2);
+            transform: translateX(4px);
+        }
+
+        .req-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .req-avt {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 107, 129, 0.4);
+            box-shadow: 0 2px 12px rgba(255, 107, 129, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .request-item:hover .req-avt {
+            border-color: var(--pink-400);
+            box-shadow: 0 4px 16px rgba(255, 107, 129, 0.35);
+        }
+
+        .req-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .req-name {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .req-uid {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.35);
+            font-weight: 500;
+        }
+
+        .req-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-req-accept {
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, #ff6b81, #ff3860);
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: var(--font-main);
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 10px rgba(255, 56, 96, 0.3);
+        }
+
+        .btn-req-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 56, 96, 0.45);
+            background: linear-gradient(135deg, #ff8a9e, #ff4d70);
+        }
+
+        .btn-req-accept:active {
+            transform: translateY(0);
+        }
+
+        .btn-req-deny {
+            padding: 8px 14px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: var(--font-main);
+            transition: all 0.25s ease;
+        }
+
+        .btn-req-deny:hover {
+            background: rgba(255, 80, 80, 0.15);
+            border-color: rgba(255, 80, 80, 0.3);
+            color: #ff6b6b;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 480px) {
+            .request-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .req-actions {
+                justify-content: flex-end;
+            }
+        }
+
+        /* === STORIES === */
+        .stories-section {
+            margin-bottom: 24px;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .stories-section .section-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .stories-row {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .stories-row::-webkit-scrollbar { height: 0; }
+
+        .story-item {
+            flex-shrink: 0;
+            width: 90px;
+            text-align: center;
+            cursor: pointer;
+            scroll-snap-align: start;
+            transition: var(--transition-fast);
+        }
+
+        .story-item:hover { transform: translateY(-3px); }
+
+        .story-ring {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--gradient-love);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            box-shadow: 0 0 15px rgba(255, 107, 129, 0.3);
+        }
+
+        .story-ring.no-story {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+        }
+
+        .story-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #0a0a0f;
+        }
+
+        .story-name {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Add Story card */
+        .story-add {
+            position: relative;
+        }
+
+        .story-add .story-ring {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+
+        .story-add-icon {
+            position: absolute;
+            bottom: 20px;
+            right: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--gradient-love);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            border: 3px solid #0a0a0f;
+            z-index: 2;
+        }
+
+        /* Story Modal */
+        .story-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-modal.open { display: flex; }
+
+        .story-modal-content {
+            background: rgba(30, 20, 50, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            width: 100%;
+            max-width: 420px;
+            animation: fadeInScale 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .story-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .story-modal-header h3 { font-size: 1.2rem; color: white; }
+
+        .story-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-close:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .story-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            margin-bottom: 15px;
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .story-caption-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+            outline: none;
+            margin-bottom: 16px;
+            transition: var(--transition-fast);
+        }
+
+        .story-caption-input:focus { border-color: var(--pink-400); }
+        .story-caption-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .story-modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .story-modal-actions label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .story-modal-actions label:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+        .story-modal-actions label input { display: none; }
+
+        .btn-upload-story {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background: var(--gradient-love);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+            transition: var(--transition-base);
+        }
+
+        .btn-upload-story:hover { box-shadow: 0 6px 20px rgba(255, 107, 129, 0.4); }
+        .btn-upload-story:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Story Viewer */
+        .story-viewer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .story-viewer.open { display: flex; }
+
+        .story-viewer-header {
+            position: absolute;
+            top: 20px;
+            left: 20px; right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .story-viewer-header img {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+
+        .story-viewer-header .sv-name { color: white; font-weight: 700; font-size: 0.95rem; }
+        .story-viewer-header .sv-time { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+        .sv-close {
+            margin-left: auto;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-viewer-img {
+            max-width: 90%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+        }
+
+        .story-viewer-caption {
+            color: white;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            text-align: center;
+            max-width: 500px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Progress bar at top */
+        .story-progress {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            z-index: 3;
+        }
+
+        .story-progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            animation: storyProgress 5s linear forwards;
+        }
+
+        @keyframes storyProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Create Post */
+        .create-post {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.6s ease forwards;
+            animation-delay: 0.15s;
+            opacity: 0;
+        }
+
+        .create-post textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            resize: none;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            color: white;
+            margin-bottom: 16px;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .create-post textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
+        .create-post textarea:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 107, 129, 0.3);
+            box-shadow: 0 0 0 3px rgba(255, 107, 129, 0.1);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-size: 0.9rem;
+        }
+
+        .file-upload-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+        .file-upload-btn input[type="file"] { display: none; }
+
+        .file-name { font-size: 0.8rem; color: var(--pink-300); margin-top: 8px; }
+
+        .btn-post {
+            background: var(--gradient-love);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-post:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 107, 129, 0.4); }
+
+        /* Post Card */
+        .post-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: var(--transition-base);
+            animation: slideUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .post-card:hover { border-color: rgba(255, 255, 255, 0.15); box-shadow: var(--shadow-md); }
+
+        .post-header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .post-header .avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--pink-400);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .post-info h4 { margin: 0; font-size: 1rem; font-weight: 700; color: white; }
+        .post-info span { font-size: 0.8rem; color: rgba(255, 255, 255, 0.4); }
+
+        .post-content {
+            padding: 0 20px 18px;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            word-wrap: break-word;
+        }
+
+        .post-image { background: rgba(0, 0, 0, 0.3); display: flex; justify-content: center; }
+        .post-image img { width: 100%; max-height: 500px; object-fit: contain; display: block; }
+
+        .post-footer {
+            padding: 8px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .action-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+
+        .action-btn:hover { background: rgba(255, 255, 255, 0.06); color: var(--pink-300); }
+        .action-btn.liked { color: var(--pink-400); }
+
+        .post-card:nth-child(1) { animation-delay: 0.1s; }
+        .post-card:nth-child(2) { animation-delay: 0.2s; }
+        .post-card:nth-child(3) { animation-delay: 0.3s; }
+        .post-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* === COMMENTS === */
+        .comments-section {
+            display: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 20px;
+        }
+
+        .comments-section.open { display: block; animation: fadeIn 0.3s ease; }
+
+        .comment-list { margin-bottom: 12px; }
+
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .comment-item:last-child { border-bottom: none; }
+
+        .comment-item .cmt-avt {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--pink-400);
+            flex-shrink: 0;
+        }
+
+        .comment-bubble {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 10px 14px;
+            flex: 1;
+        }
+
+        .comment-bubble .cmt-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--pink-300);
+            margin-bottom: 3px;
+        }
+
+        .comment-bubble .cmt-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .comment-bubble .cmt-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 4px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .comment-form input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            margin: 0;
+            font-family: var(--font-main);
+            transition: var(--transition-fast);
+        }
+
+        .comment-form input:focus { border-color: var(--pink-400); background: rgba(255,255,255,0.1); }
+        .comment-form input::placeholder { color: rgba(255,255,255,0.3); }
+
+        .comment-form .btn-cmt {
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-love);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: var(--font-main);
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .comment-form .btn-cmt:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,129,0.3); }
+
+        .no-comments {
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 480px) {
+            .feed-container { margin: 20px auto; }
+            .id-friend-bar { flex-direction: column; }
+            .create-post { padding: 18px; }
+            .post-actions { flex-direction: column; align-items: stretch; }
+            .btn-post { text-align: center; }
+            .story-item { width: 75px; }
+            .story-ring { width: 60px; height: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div id="header-placeholder"></div>
+    
+    <div class="feed-container">
+        <div class="page-title">
+            <h2>🌍 Cộng Đồng</h2>
+            <p>Chia sẻ khoảnh khắc với mọi người</p>
+        </div>
+
+        <!-- ID Card + Kết Bạn -->
+        <div class="id-friend-bar">
+            <div class="my-id-card">
+                <img id="my-avt" src="https://i.imgur.com/6VBx3io.png" class="id-avt" alt="My Avatar">
+                <div class="id-info">
+                    <div class="id-name" id="my-name">Bạn</div>
+                    <div class="id-uid">
+                        <span>🔑 ID: <b id="my-uid-text">------</b></span>
+                        <button class="id-copy-btn" onclick="copyMyUID()">Sao chép</button>
+                    </div>
+                </div>
+            </div>
+            <div class="add-friend-card">
+                <label>➕ Kết bạn bằng ID</label>
+                <div class="add-friend-input">
+                    <input type="text" id="friend-id-input" placeholder="Nhập ID 6 số..." maxlength="6">
+                    <button class="btn-add-friend" onclick="addFriendByID()">Thêm</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Friend Requests Area -->
+        <div class="friend-requests-wrapper" id="friend-requests-area">
+            <div class="req-header">
+                <div class="req-title">
+                    <span class="req-icon">💌</span>
+                    Lời mời kết bạn
+                    <span class="req-count" id="req-count-badge">0</span>
+                </div>
+            </div>
+            <div class="requests-list" id="requests-list-container">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- Stories -->
+        <div class="stories-section">
+            <div class="section-label">📸 Story</div>
+            <div class="stories-row" id="stories-row">
+                <!-- Add Story -->
+                <div class="story-item story-add" onclick="openStoryModal()">
+                    <div class="story-ring">
+                        <img id="story-my-avt" src="https://i.imgur.com/6VBx3io.png" alt="My">
+                    </div>
+                    <div class="story-add-icon">+</div>
+                    <div class="story-name">Tạo Story</div>
+                </div>
+                <!-- Other stories rendered by JS -->
+            </div>
+        </div>
+        
+        <!-- Create Post -->
+        <form class="create-post" onsubmit="handlePostSubmit(event)">
+            <textarea id="post-content" rows="3" placeholder="Bạn đang nghĩ gì thế?" required></textarea>
+            <div class="post-actions">
+                <label class="file-upload-btn">
+                    📷 Thêm ảnh
+                    <input type="file" id="post-image" accept="image/*" onchange="showPostFile(this)">
+                </label>
+                <button type="submit" class="btn-post">Đăng bài 🚀</button>
+            </div>
+            <div class="file-name" id="post-file-name"></div>
+        </form>
+
+        <div id="posts-list"></div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Story Upload Modal -->
+    <div class="story-modal" id="story-modal">
+        <div class="story-modal-content">
+            <div class="story-modal-header">
+                <h3>📸 Tạo Story Mới</h3>
+                <button class="story-close" onclick="closeStoryModal()">✕</button>
+            </div>
+            <img id="story-preview" class="story-preview" alt="Xem trước">
+            <input type="text" class="story-caption-input" id="story-caption" placeholder="Viết caption cho story...">
+            <div class="story-modal-actions">
+                <label>
+                    🖼️ Chọn ảnh
+                    <input type="file" id="story-file" accept="image/*" onchange="previewStoryImage(this)">
+                </label>
+                <button class="btn-upload-story" id="btn-upload-story" onclick="uploadStory()" disabled>Đăng Story ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Viewer -->
+    <div class="story-viewer" id="story-viewer">
+        <div class="story-progress"><div class="story-progress-fill" id="story-progress-fill"></div></div>
+        <div class="story-viewer-header">
+            <img id="sv-avt" src="https://i.imgur.com/6VBx3io.png" alt="Avt">
+            <div>
+                <div class="sv-name" id="sv-name">User</div>
+                <div class="sv-time" id="sv-time">Vừa xong</div>
+            </div>
+            <button class="sv-close" onclick="closeStoryViewer()">✕</button>
+        </div>
+        <img class="story-viewer-img" id="sv-img" src="" alt="Story">
+        <div class="story-viewer-caption" id="sv-caption"></div>
+    </div>
+
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        Auth.requireAuth();
+
+        // Lấy config gốc để biết avatar Nam/Nữ
+        const config = DB.getConfig();
+        document.body.style.backgroundImage = `url('${config.anh_nen}')`;
+
+        const currentUser = Auth.getCurrentUser();
+
+        // Helper: getRealAvatar() giờ đã được chuyển sang main.js để dùng chung cho toàn bộ app
+
+        // Constants
+        const COMMENTS_KEY = 'post_comments';
+
+        // === HIỂN THỊ ID ===
+        if (currentUser) {
+            document.getElementById('my-uid-text').textContent = currentUser.uid;
+            document.getElementById('my-name').textContent = currentUser.username;
+            document.getElementById('post-content').placeholder = 
+                `Bạn đang nghĩ gì thế, ${currentUser.username}?`;
+            document.getElementById('my-avt').src = getRealAvatar(currentUser);
+        }
+
+        function copyMyUID() {
+            if (currentUser) {
+                navigator.clipboard.writeText(currentUser.uid).then(() => {
+                    showToast('Đã sao chép ID: ' + currentUser.uid, 'success');
+                });
+            }
+        }
+
+        function sharePost(postId) {
+            const url = window.location.href.split('?')[0] + '?post=' + postId;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Đếm Ngày Yêu - Cộng Đồng',
+                    text: 'Xem bài viết này trên Đếm Ngày Yêu:',
+                    url: url
+                }).catch(err => {
+                    console.error("Lỗi Web Share API:", err);
+                    // Fallback nếu user hủy hoặc lỗi
+                    fallbackCopyPath(url);
+                });
+            } else {
+                fallbackCopyPath(url);
+            }
+        }
+
+        function fallbackCopyPath(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Đã sao chép liên kết chia sẻ!', 'success');
+            }).catch(err => {
+                console.error("Lỗi khi sao chép:", err);
+                showToast('Không thể sao chép liên kết!', 'error');
+            });
+        }
+
+        // === KẾT BẠN ===
+        function addFriendByID() {
+            const uid = document.getElementById('friend-id-input').value.trim();
+            if (!uid || uid.length !== 6) {
+                showToast('Vui lòng nhập đúng ID 6 số!', 'error');
+                return;
+            }
+            if (uid === currentUser.uid) {
+                showToast('Bạn không thể kết bạn với chính mình!', 'error');
+                return;
+            }
+            const friend = DB.findUserByUID(uid);
+            if (!friend) {
+                showToast('Không tìm thấy người dùng với ID này!', 'error');
+                return;
+            }
+
+            // Kiểm tra xem đã kết bạn chưa
+            let friends = JSON.parse(localStorage.getItem('friends_' + currentUser.uid) || '[]');
+            if (friends.includes(uid)) {
+                showToast(`${friend.username} đã là bạn của bạn rồi! 💕`, 'info');
+                return;
+            }
+
+            // Lưu vào friend_requests của người nhận
+            let requests = JSON.parse(localStorage.getItem('friend_requests_' + uid) || '[]');
+            if (requests.includes(currentUser.uid)) {
+                showToast(`Bạn đã gửi lời mời cho người này rồi!`, 'info');
+                return;
+            }
+
+            requests.push(currentUser.uid);
+            localStorage.setItem('friend_requests_' + uid, JSON.stringify(requests));
+            showToast(`Đã gửi lời mời kết bạn đến ${friend.username}! ⏳`, 'success');
+            document.getElementById('friend-id-input').value = '';
+        }
+
+        // Lời Mời Kết Bạn Logic
+        function renderFriendRequests() {
+            if (!currentUser) return;
+            const requests = JSON.parse(localStorage.getItem('friend_requests_' + currentUser.uid) || '[]');
+            const area = document.getElementById('friend-requests-area');
+            const badge = document.getElementById('req-count-badge');
+            const listContainer = document.getElementById('requests-list-container');
+            
+            if (requests.length === 0) {
+                area.style.display = 'none';
+                return;
+            }
+            
+            area.style.display = 'block';
+            badge.textContent = requests.length;
+            
+            let html = '';
+            requests.forEach(reqUid => {
+                const reqUser = DB.findUserByUID(reqUid);
+                if (reqUser) {
+                    const reqAvt = getRealAvatar(reqUser);
+                    html += `
+                        <div class="request-item">
+                            <div class="req-user">
+                                <img src="${reqAvt}" class="req-avt" alt="Avt">
+                                <div class="req-info">
+                                    <span class="req-name">${escapeHtml(reqUser.username)}</span>
+                                    <span class="req-uid">ID: ${reqUid}</span>
+                                </div>
+                            </div>
+                            <div class="req-actions">
+                                <button class="btn-req-accept" onclick="acceptFriendRequest('${reqUid}')">✓ Đồng ý</button>
+                                <button class="btn-req-deny" onclick="denyFriendRequest('${reqUid}')">✕ Từ chối</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function acceptFriendRequest(reqUid) {
+            // Thêm vào danh sách bạn bè của mình
+            let myFriends = JSON.parse(localStorage.getItem('friends_' + currentUser.uid) || '[]');
+            if (!myFriends.includes(reqUid)) myFriends.push(reqUid);
+            localStorage.setItem('friends_' + currentUser.uid, JSON.stringify(myFriends));
+
+            // Thêm mình vào danh sách bạn bè của họ
+            let theirFriends = JSON.parse(localStorage.getItem('friends_' + reqUid) || '[]');
+            if (!theirFriends.includes(currentUser.uid)) theirFriends.push(currentUser.uid);
+            localStorage.setItem('friends_' + reqUid, JSON.stringify(theirFriends));
+
+            // Xóa khỏi danh sách chờ của mình
+            denyFriendRequest(reqUid, false); 
+            
+            const friendUser = DB.findUserByUID(reqUid);
+            showToast(`Đã trở thành bạn bè với ${friendUser ? friendUser.username : reqUid}! 🎉`, 'success');
+        }
+
+        function denyFriendRequest(reqUid, showMsg = true) {
+            let requests = JSON.parse(localStorage.getItem('friend_requests_' + currentUser.uid) || '[]');
+            requests = requests.filter(id => id !== reqUid);
+            localStorage.setItem('friend_requests_' + currentUser.uid, JSON.stringify(requests));
+            renderFriendRequests();
+            if (showMsg) showToast('Đã xóa lời mời kết bạn.', 'info');
+        }
+
+        // === STORIES ===
+        const STORIES_KEY = 'stories';
+        let storyFileData = '';
+
+        function getStories() {
+            try {
+                const data = localStorage.getItem(STORIES_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error("Lỗi đọc stories:", e);
+                return [];
+            }
+        }
+
+        function saveStories(stories) {
+            localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
+        }
+
+        function openStoryModal() {
+            document.getElementById('story-modal').classList.add('open');
+            storyFileData = '';
+            document.getElementById('story-preview').style.display = 'none';
+            document.getElementById('story-caption').value = '';
+            document.getElementById('story-file').value = '';
+            document.getElementById('btn-upload-story').disabled = true;
+        }
+
+        function closeStoryModal() {
+            document.getElementById('story-modal').classList.remove('open');
+        }
+
+        function previewStoryImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Ảnh quá lớn! Tối đa 2MB.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                storyFileData = e.target.result;
+                const preview = document.getElementById('story-preview');
+                preview.src = storyFileData;
+                preview.style.display = 'block';
+                document.getElementById('btn-upload-story').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function uploadStory() {
+            if (!storyFileData) {
+                showToast('Vui lòng chọn ảnh trước!', 'error');
+                return;
+            }
+
+            const caption = document.getElementById('story-caption').value.trim();
+            const stories = getStories();
+
+            // Xóa story cũ > 24h
+            const now = Date.now();
+            const filtered = stories.filter(s => now - new Date(s.time).getTime() < 24 * 60 * 60 * 1000);
+
+            filtered.push({
+                id: Date.now().toString(36),
+                author: currentUser.username,
+                author_uid: currentUser.uid,
+                image: storyFileData,
+                caption: caption,
+                time: new Date().toISOString()
+            });
+
+            saveStories(filtered);
+            closeStoryModal();
+            showToast('Đã đăng story! ✨', 'success');
+            renderStories();
+        }
+
+        function renderStories() {
+            try {
+                const container = document.getElementById('stories-row');
+                const stories = getStories();
+                const now = Date.now();
+
+                // Lọc story < 24h, cẩn thận tránh s bị null hoặc time bị lỗi
+                const activeStories = stories.filter(s => {
+                    if (!s || !s.time) return false;
+                    const d = new Date(s.time);
+                    if (isNaN(d)) return false;
+                    return now - d.getTime() < 24 * 60 * 60 * 1000;
+                });
+
+                // Group by author
+                const grouped = {};
+                activeStories.forEach(s => {
+                    if (!s.author_uid) return;
+                    if (!grouped[s.author_uid]) {
+                        grouped[s.author_uid] = { author: s.author || 'Người dùng', uid: s.author_uid, stories: [] };
+                    }
+                    grouped[s.author_uid].stories.push(s);
+                });
+
+                // Build HTML (keep add story button)
+                const myAvt = getRealAvatar(currentUser);
+                let html = `
+                    <div class="story-item story-add" onclick="openStoryModal()">
+                        <div class="story-ring">
+                            <img id="story-my-avt" src="${myAvt}" alt="My">
+                        </div>
+                        <div class="story-add-icon">+</div>
+                        <div class="story-name">Tạo Story</div>
+                    </div>
+                `;
+
+                Object.values(grouped).forEach(group => {
+                    const latestStory = group.stories[group.stories.length - 1];
+                    html += `
+                        <div class="story-item" onclick="viewStory('${group.uid}')">
+                            <div class="story-ring">
+                                <img src="${latestStory.image || ''}" alt="${escapeHtml(group.author)}">
+                            </div>
+                            <div class="story-name">${escapeHtml(group.author)}</div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (err) {
+                console.error("renderStories error:", err);
+            }
+        }
+
+        let storyTimer = null;
+
+        function viewStory(uid) {
+            const stories = getStories();
+            const userStories = stories.filter(s => s.author_uid === uid);
+            if (userStories.length === 0) return;
+
+            const latest = userStories[userStories.length - 1];
+            const user = DB.findUserByUID(uid);
+
+            document.getElementById('sv-name').textContent = latest.author;
+            document.getElementById('sv-avt').src = getRealAvatar(user);
+            document.getElementById('sv-img').src = latest.image;
+            document.getElementById('sv-caption').textContent = latest.caption || '';
+            
+            const d = new Date(latest.time);
+            const ago = Math.floor((Date.now() - d.getTime()) / 60000);
+            document.getElementById('sv-time').textContent = ago < 60 ? `${ago} phút trước` : `${Math.floor(ago/60)} giờ trước`;
+
+            // Reset progress
+            const fill = document.getElementById('story-progress-fill');
+            fill.style.animation = 'none';
+            fill.offsetHeight; // trigger reflow
+            fill.style.animation = 'storyProgress 5s linear forwards';
+
+            document.getElementById('story-viewer').classList.add('open');
+
+            // Auto close after 5s
+            if (storyTimer) clearTimeout(storyTimer);
+            storyTimer = setTimeout(() => closeStoryViewer(), 5000);
+        }
+
+        function closeStoryViewer() {
+            document.getElementById('story-viewer').classList.remove('open');
+            if (storyTimer) { clearTimeout(storyTimer); storyTimer = null; }
+        }
+
+        // Close on click outside
+        document.getElementById('story-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('story-modal')) closeStoryModal();
+        });
+
+        document.getElementById('story-viewer').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('story-viewer')) closeStoryViewer();
+        });
+
+        // Init stories
+        renderStories();
+
+        // === POSTS ===
+        renderPosts();
+
+        function showPostFile(input) {
+            const name = input.files[0] ? input.files[0].name : '';
+            document.getElementById('post-file-name').textContent = name ? '📎 ' + name : '';
+        }
+
+        async function handlePostSubmit(e) {
+            e.preventDefault();
+            
+            try {
+                const content = document.getElementById('post-content').value.trim();
+                if (!content) return;
+
+                const imageFile = document.getElementById('post-image').files[0] || null;
+                const btn = e.target.querySelector('.btn-post');
+                btn.textContent = 'Đang đăng...';
+                btn.disabled = true;
+
+                let imageData = '';
+                if (imageFile) {
+                    try {
+                        imageData = await DB.fileToBase64(imageFile);
+                    } catch (err) {
+                        showToast(err.message, 'error');
+                        btn.textContent = 'Đăng bài 🚀';
+                        btn.disabled = false;
+                        return;
+                    }
+                }
+
+                const post = {
+                    author: currentUser.username,
+                    author_uid: currentUser.uid,
+                    content: content,
+                    image: imageData,
+                    time: new Date().toISOString()
+                };
+
+                DB.addPost(post);
+                showToast('Đã đăng bài thành công!', 'success');
+                
+                document.getElementById('post-content').value = '';
+                document.getElementById('post-image').value = '';
+                document.getElementById('post-file-name').textContent = '';
+                
+                renderPosts();
+
+                btn.textContent = 'Đăng bài 🚀';
+                btn.disabled = false;
+            } catch (err) {
+                console.error("handlePostSubmit error:", err);
+                alert("Error in handlePostSubmit: " + err.message + "\n" + err.stack);
+                const btn = e.target.querySelector('.btn-post');
+                if (btn) {
+                    btn.textContent = 'Lỗi!';
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        function renderPosts() {
+            try {
+                // === COMMENT SYSTEM KHOI TAO TRUOC KHI RENDER ===
+                const container = document.getElementById('posts-list');
+            const posts = DB.getPosts();
+            let reversed = [...posts].reverse();
+            
+            // Lọc nếu có tham số ?post=id trên URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedPostId = urlParams.get('post');
+            let isSharedView = false;
+            
+            if (sharedPostId) {
+                const found = reversed.find(p => (p.id || '').toString() === sharedPostId);
+                if (found) {
+                    reversed = [found];
+                    isSharedView = true;
+                } else {
+                    // Nếu ko tìm thấy, vẫn hiện bình thường kèm thông báo lỗi nhẹ
+                    showToast('Không tìm thấy bài viết được chia sẻ!', 'error');
+                }
+            }
+
+            if (reversed.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <p>Bảng tin đang trống. Hãy là người đầu tiên chia sẻ nhé!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            if (isSharedView) {
+                html += `
+                    <div style="margin-bottom: 20px;">
+                        <a href="congdong.html" style="color: var(--pink-400); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                            ⬅️ Quay lại toàn bộ Bảng tin
+                        </a>
+                    </div>
+                `;
+            }
+
+            reversed.forEach((post, i) => {
+                if (!post || typeof post !== 'object') return; // Skip bad data
+                try {
+                    let timeStr = 'Vừa xong';
+                    if (post.time) {
+                        const d = new Date(post.time);
+                        if (!isNaN(d)) {
+                            timeStr = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} - ${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
+                        }
+                    }
+                    const delay = Math.min(i * 0.1, 0.5);
+                    const postId = post.id || `old-${Date.now()}-${i}`;
+                    const cmtCount = getComments(postId).length;
+
+                    let authorUser = null;
+                    if (post.author_uid) authorUser = DB.findUserByUID(post.author_uid);
+                    if (!authorUser && post.author) authorUser = DB.findUserByUsername(post.author);
+                    const authorAvt = getRealAvatar(authorUser);
+
+                    html += `
+                        <div class="post-card" style="animation-delay: ${delay}s">
+                            <div class="post-header">
+                                <img src="${authorAvt}" class="avatar" alt="Avatar">
+                                <div class="post-info">
+                                    <h4>${escapeHtml(post.author || 'Người dùng ẩn danh')}</h4>
+                                    <span>${timeStr}</span>
+                                </div>
+                            </div>
+                            <div class="post-content">${nl2br(escapeHtml(post.content || ''))}</div>
+                            ${post.image ? `<div class="post-image"><img src="${post.image}" alt="Ảnh đính kèm"></div>` : ''}
+                            <div class="post-footer">
+                                <div class="action-btn" onclick="toggleLike(this)">👍 Thích</div>
+                                <div class="action-btn" onclick="toggleComments('cmt-${postId}')">💬 ${cmtCount > 0 ? cmtCount + ' Bình luận' : 'Bình luận'}</div>
+                                <div class="action-btn" onclick="sharePost('${postId}')">↪️ Chia sẻ</div>
+                            </div>
+                            <div class="comments-section" id="cmt-${postId}">
+                                <div class="comment-list" id="cmt-list-${postId}">
+                                    ${renderComments(postId)}
+                                </div>
+                                <div class="comment-form">
+                                    <input type="text" id="cmt-input-${postId}" placeholder="Viết bình luận..." onkeypress="if(event.key==='Enter')addComment('${postId}')">
+                                    <button class="btn-cmt" onclick="addComment('${postId}')">Gửi</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error("Skipping bad post:", e, post);
+                }
+            });
+
+            container.innerHTML = html;
+            } catch (err) {
+                console.error("renderPosts error:", err);
+                alert("Error in renderPosts: " + err.message + "\n" + err.stack);
+            }
+        }
+
+        // === COMMENT SYSTEM ===
+
+        function getAllComments() {
+            try {
+                const data = localStorage.getItem(COMMENTS_KEY);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                console.error("Lỗi đọc comments:", e);
+                return {};
+            }
+        }
+
+        function getComments(postId) {
+            const all = getAllComments();
+            return all[postId] || [];
+        }
+
+        function addComment(postId) {
+            const input = document.getElementById('cmt-input-' + postId);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const all = getAllComments();
+            if (!all[postId]) all[postId] = [];
+
+            all[postId].push({
+                author: currentUser.username,
+                author_uid: currentUser.uid,
+                text: text,
+                time: new Date().toISOString()
+            });
+
+            localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+            input.value = '';
+
+            // Re-render comments for this post
+            const listEl = document.getElementById('cmt-list-' + postId);
+            if (listEl) listEl.innerHTML = renderComments(postId);
+
+            // Update comment count in button
+            renderPosts();
+            // Re-open comment section
+            const cmtSection = document.getElementById('cmt-' + postId);
+            if (cmtSection) cmtSection.classList.add('open');
+        }
+
+        function renderComments(postId) {
+            const comments = getComments(postId);
+            if (comments.length === 0) {
+                return '<div class="no-comments">Chưa có bình luận nào</div>';
+            }
+
+            let html = '';
+            comments.forEach(cmt => {
+                if (!cmt || typeof cmt !== 'object') return; // Skip bad comments
+                try {
+                    let timeStr = 'Vừa xong';
+                    if (cmt.time) {
+                        const d = new Date(cmt.time);
+                        if (!isNaN(d)) {
+                            const ago = Math.floor((Date.now() - d.getTime()) / 60000);
+                            if (ago < 1) timeStr = 'Vừa xong';
+                            else if (ago < 60) timeStr = ago + ' phút trước';
+                            else if (ago < 1440) timeStr = Math.floor(ago/60) + ' giờ trước';
+                            else timeStr = `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`;
+                        }
+                    }
+
+                    let cmtUser = null;
+                    if (cmt.author_uid) cmtUser = DB.findUserByUID(cmt.author_uid);
+                    if (!cmtUser && cmt.author) cmtUser = DB.findUserByUsername(cmt.author);
+                    
+                    const cmtAvt = getRealAvatar(cmtUser);
+
+                    html += `
+                        <div class="comment-item">
+                            <img src="${cmtAvt}" class="cmt-avt" alt="Avt">
+                            <div class="comment-bubble">
+                                <div class="cmt-name">${escapeHtml(cmt.author || 'Người dùng')}</div>
+                                <div class="cmt-text">${nl2br(escapeHtml(cmt.text || ''))}</div>
+                                <div class="cmt-time">${timeStr}</div>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error("Skipping bad comment:", e, cmt);
+                }
+            });
+            return html;
+        }
+
+        function toggleComments(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle('open');
+                if (section.classList.contains('open')) {
+                    const input = section.querySelector('input');
+                    if (input) setTimeout(() => input.focus(), 100);
+                }
+            }
+        }
+
+        function toggleLike(el) {
+            if (el.classList.contains('liked')) {
+                el.classList.remove('liked');
+                el.innerHTML = '👍 Thích';
+            } else {
+                el.classList.add('liked');
+                el.innerHTML = '👍 Đã thích';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function nl2br(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+
+        // --- Khởi tạo dữ liệu khi tải trang ---
+        renderPosts();
+        renderStories();
+        renderFriendRequests();
+
+        // Đóng Story bằng vùng đen
+        document.querySelector('.overlay').addEventListener('click', closeStoryModal);
+    </script>
+</body>
+</html>

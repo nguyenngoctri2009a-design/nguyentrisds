@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sảnh Game Online - Đếm Ngày Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/lobby.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <a href="games.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+                <h1><i class="fas fa-trophy" style="margin-right: 6px;"></i>Sảnh Game</h1>
+            </div>
+            <div class="header-actions">
+                <div class="coin-display">
+                    <i class="fas fa-coins"></i> <span id="user-coins">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="lobby-container">
+            <!-- Room List Header -->
+            <div class="lobby-header" style="justify-content: center; margin-top: 10px;">
+                <h2><i class="fas fa-door-open" style="margin-right: 6px; font-size: 0.85rem;"></i>Danh sách phòng</h2>
+            </div>
+
+            <!-- Room List -->
+            <div id="room-list" class="room-list">
+                <div class="empty-state">
+                    <i class="fas fa-ghost"></i>
+                    Chưa có phòng nào. Hãy tạo phòng đầu tiên!
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Room Modal -->
+        <div class="modal-overlay" id="create-modal">
+            <div class="modal-card">
+                <h3 class="modal-title"><i class="fas fa-wand-magic-sparkles" style="margin-right: 8px;"></i>Tạo Phòng Mới</h3>
+                <div class="form-group">
+                    <label class="form-label">Tên phòng</label>
+                    <input type="text" id="room-name" class="form-input" placeholder="VD: Solo Caro 50k">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trò chơi</label>
+                    <select id="game-type" class="form-input">
+                        <option value="caro">🎯 Cờ Caro</option>
+                        <option value="noitu">🔤 Nối Từ</option>
+                    </select>
+                </div>
+                <div class="form-group" id="mode-group">
+                    <label class="form-label">Chế độ</label>
+                    <select id="game-mode" class="form-input">
+                        <option value="pvp">⚔️ Đấu với Người (PvP)</option>
+                        <option value="pve">🤖 Đấu với Bot (PvE)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mức cược</label>
+                    <input type="number" id="room-bet" class="form-input" value="0" min="0" step="10" placeholder="Nhập số xu cược">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu (Tùy chọn)</label>
+                    <input type="password" id="room-password" class="form-input" placeholder="Để trống nếu công khai">
+                </div>
+                <div class="modal-actions">
+                    <button id="btn-cancel-create" class="btn-cancel">Hủy</button>
+                    <button id="btn-confirm-create" class="btn-create">Tạo phòng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Modal -->
+        <div class="modal-overlay" id="password-modal">
+            <div class="modal-card">
+                <h3 class="modal-title"><i class="fas fa-lock" style="margin-right: 8px;"></i>Nhập Mật Khẩu</h3>
+                <div class="form-group">
+                    <label class="form-label">Phòng này yêu cầu mật khẩu để vào</label>
+                    <input type="password" id="join-password" class="form-input" placeholder="Nhập mật khẩu...">
+                </div>
+                <div class="modal-actions">
+                    <button id="btn-cancel-join" class="btn-cancel">Hủy</button>
+                    <button id="btn-confirm-join" class="btn-create">Vào phòng</button>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Home</span>
+            </a>
+            <a href="messenger.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>Chat</span>
+            </a>
+            <a href="nhatki.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Nhật Ký</span>
+            </a>
+            <a href="games.html" class="nav-item active">
+                <i class="fas fa-gamepad"></i>
+                <span>Trò Chơi</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Cài Đặt</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/lobby.js"></script>
+</body>
+</html>

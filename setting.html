@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt - Đếm Ngày Yêu</title>
+    <meta name="description" content="Tùy chỉnh giao diện - Đếm Ngày Yêu VIP">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        body { 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overlay {
+            background: linear-gradient(135deg,
+                rgba(10, 10, 20, 0.92) 0%,
+                rgba(25, 10, 40, 0.88) 50%,
+                rgba(10, 10, 20, 0.92) 100%
+            );
+        }
+
+        .setting-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+            z-index: 1;
+        }
+
+        .setting-box {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 35px;
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 560px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInScale 0.6s ease forwards;
+            align-self: flex-start;
+        }
+
+        .setting-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient-aurora);
+        }
+
+        .setting-box h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* UID Card */
+        .uid-card {
+            background: rgba(255, 107, 129, 0.08);
+            border: 1px solid rgba(255, 107, 129, 0.15);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .uid-card .uid-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+        .uid-card .uid-value { font-size: 1.5rem; font-weight: 700; color: var(--pink-300); letter-spacing: 4px; cursor: pointer; }
+        .uid-card .uid-hint { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 4px; }
+
+        /* Avatar Upload Section */
+        .avatar-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .avatar-upload {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .avatar-upload:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-upload input[type="file"] { display: none; }
+
+        .avt-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            display: block;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            transition: var(--transition-base);
+        }
+
+        .avatar-upload:hover .avt-preview {
+            border-color: var(--pink-400);
+        }
+
+        .avt-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+
+        .avt-label em {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 3px;
+            font-style: italic;
+        }
+
+        /* Form Groups */
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            outline: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+            margin: 0;
+        }
+
+        .form-group input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .form-group input:focus,
+        .custom-select:focus {
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            outline: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+            margin: 0;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .custom-select option {
+            background: #1a1a2e;
+            color: white;
+            padding: 10px;
+        }
+
+        /* Background Upload */
+        .bg-upload-area {
+            display: block;
+            border: 2px dashed rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-base);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-upload-area:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .bg-upload-area input[type="file"] { display: none; }
+
+        .bg-preview {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .bg-upload-area .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+        .bg-upload-area .upload-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.5;
+        }
+
+        .bg-upload-area .upload-hint {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 6px;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 16px;
+            margin-top: 8px;
+            background: var(--gradient-aurora);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.35);
+        }
+
+        @media (max-width: 480px) {
+            .setting-box { padding: 25px 18px; border-radius: var(--radius-lg); }
+            .setting-box h2 { font-size: 1.5rem; }
+            .setting-wrapper { padding: 15px 12px; }
+            .avatar-section { flex-direction: column; }
+            .avt-preview { width: 65px; height: 65px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div id="header-placeholder"></div>
+
+    <div class="setting-wrapper">
+        <div class="setting-box">
+            <h2>⚙️ Tùy Chỉnh</h2>
+
+            <!-- UID -->
+            <div class="uid-card">
+                <div class="uid-label">Mã ID của bạn</div>
+                <div class="uid-value" id="uid-display" onclick="copyMyUID()" title="Nhấn để sao chép">------</div>
+                <div class="uid-hint">Nhấn để sao chép • Chia sẻ cho người yêu ❤️</div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 26px;">
+                <label><span>💞</span> Kết nối ID người yêu</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="setting-partner-id" inputmode="numeric" placeholder="Nhập ID 6 số của người yêu" style="margin: 0; flex: 1;">
+                    <button type="button" class="btn-save" id="btn-send-request" style="width: auto; padding: 12px 14px; border-radius: 14px;">Mời</button>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                    <div id="partner-status" style="flex: 1; font-size: 0.85rem; color: rgba(255,255,255,0.5);"></div>
+                    <button type="button" class="btn-save" id="btn-cancel-request" style="width: auto; padding: 12px 14px; border-radius: 14px; background: rgba(255, 71, 87, 0.15); border: 1px solid rgba(255, 71, 87, 0.25);">Hủy mời</button>
+                    <button type="button" class="btn-save" id="btn-disconnect" style="width: auto; padding: 12px 14px; border-radius: 14px; background: rgba(255, 71, 87, 0.15); border: 1px solid rgba(255, 71, 87, 0.25);">Hủy kết nối</button>
+                </div>
+                <div id="partner-incoming" style="display:none; margin-top: 12px; padding: 12px; border-radius: 16px; border: 1px solid rgba(168, 85, 247, 0.18); background: rgba(168, 85, 247, 0.08);">
+                    <div style="font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 10px;">Có lời mời kết nối</div>
+                    <div id="partner-incoming-list"></div>
+                </div>
+                <div style="margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.35);">Khi đã kết nối, <b>Ngày yêu</b> và <b>Ảnh nền</b> sẽ đồng bộ cho cả hai.</div>
+            </div>
+
+            <!-- Avatar Upload -->
+            <div class="avatar-section">
+                <label class="avatar-upload" for="avt-nam-file">
+                    <img id="avt-nam-preview" class="avt-preview" src="https://i.imgur.com/6VBx3io.png" alt="Avatar Nam">
+                    <div class="avt-label">👦 Ảnh Bạn Nam <em>Nhấn để đổi</em></div>
+                    <input type="file" id="avt-nam-file" accept="image/*" onchange="previewAvatar(this, 'avt-nam-preview', 'nam')">
+                </label>
+                <label class="avatar-upload" for="avt-nu-file">
+                    <img id="avt-nu-preview" class="avt-preview" src="https://i.imgur.com/6VBx3io.png" alt="Avatar Nữ">
+                    <div class="avt-label">👧 Ảnh Bạn Nữ <em>Nhấn để đổi</em></div>
+                    <input type="file" id="avt-nu-file" accept="image/*" onchange="previewAvatar(this, 'avt-nu-preview', 'nu')">
+                </label>
+            </div>
+            
+            <form onsubmit="handleSaveSetting(event)">
+                <div class="form-group">
+                    <label><span>👦</span> Tên Bạn Nam</label>
+                    <input type="text" id="setting-ten-nam" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><span>👧</span> Tên Bạn Nữ</label>
+                    <input type="text" id="setting-ten-nu" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><span>⏰</span> Thời khắc bắt đầu yêu</label>
+                    <input type="datetime-local" id="setting-ngay-yeu" required>
+                </div>
+
+                <div class="form-group">
+                    <label><span>🎭</span> Vai trò của bạn</label>
+                    <select id="setting-role" class="custom-select">
+                        <option value="">-- Chọn vai trò --</option>
+                        <option value="nam">Bạn Nam 👦</option>
+                        <option value="nu">Bạn Nữ 👧</option>
+                    </select>
+                </div>
+
+                <!-- Background Upload -->
+                <div class="form-group">
+                    <label><span>🖼️</span> Ảnh Nền</label>
+                </div>
+                <label class="bg-upload-area" for="bg-file">
+                    <img id="bg-preview" class="bg-preview" alt="Ảnh nền xem trước" style="display:none">
+                    <div id="bg-upload-content">
+                        <div class="upload-icon">🖼️</div>
+                        <div class="upload-text">Nhấn để chọn ảnh nền từ album</div>
+                        <div class="upload-hint">JPG, PNG • Tối đa 2MB</div>
+                    </div>
+                    <input type="file" id="bg-file" accept="image/*" onchange="previewBg(this)">
+                </label>
+                
+                <button type="submit" class="btn-save">Lưu Thay Đổi ✨</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        Auth.requireAuth();
+
+        const currentUser = Auth.getCurrentUser();
+        const config = DB.getConfig();
+
+        // Set background
+        if (config.anh_nen) {
+            document.body.style.backgroundImage = `url('${config.anh_nen}')`;
+        }
+
+        // Show UID
+        if (currentUser) {
+            document.getElementById('uid-display').textContent = currentUser.uid;
+        }
+
+        function refreshPartnerUI() {
+            if (!currentUser) return;
+            const linked = DB.getLinkedPartner(currentUser.uid);
+            const partnerUid = DB.getPartnerUID(currentUser.uid);
+            const outgoingUid = DB.getOutgoingPartnerRequest(currentUser.uid);
+            const incoming = DB.getIncomingPartnerRequests(currentUser.uid);
+
+            const input = document.getElementById('setting-partner-id');
+            const status = document.getElementById('partner-status');
+            const btnDisconnect = document.getElementById('btn-disconnect');
+            const btnSend = document.getElementById('btn-send-request');
+            const btnCancel = document.getElementById('btn-cancel-request');
+            const incomingBox = document.getElementById('partner-incoming');
+            const incomingList = document.getElementById('partner-incoming-list');
+
+            if (input) input.value = linked ? partnerUid : (outgoingUid || partnerUid || '');
+
+            if (linked) {
+                if (status) status.textContent = `Đã kết nối: ${linked.username} (#${linked.uid})`;
+                if (btnDisconnect) btnDisconnect.style.display = 'inline-flex';
+                if (btnCancel) btnCancel.style.display = 'none';
+                if (btnSend) btnSend.style.display = 'none';
+            } else if (outgoingUid) {
+                const p = DB.findUserByUID(outgoingUid);
+                if (status) status.textContent = p ? `Đã gửi lời mời đến ${p.username} (#${p.uid}).` : `Đã gửi lời mời đến (#${outgoingUid}).`;
+                if (btnDisconnect) btnDisconnect.style.display = 'none';
+                if (btnCancel) btnCancel.style.display = 'inline-flex';
+                if (btnSend) btnSend.style.display = 'none';
+            } else {
+                if (status) status.textContent = 'Chưa kết nối.';
+                if (btnDisconnect) btnDisconnect.style.display = 'none';
+                if (btnCancel) btnCancel.style.display = 'none';
+                if (btnSend) btnSend.style.display = 'inline-flex';
+            }
+
+            if (incomingBox && incomingList) {
+                if (incoming && incoming.length > 0) {
+                    incomingBox.style.display = 'block';
+                    incomingList.innerHTML = incoming
+                        .map(r => {
+                            const u = DB.findUserByUID(r.from);
+                            const name = u ? u.username : 'Người dùng';
+                            return `
+                                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-top: 1px solid rgba(255,255,255,0.06);">
+                                    <div style="min-width:0;">
+                                        <div style="font-weight:700; color: rgba(255,255,255,0.88);">${name} <span style=\"opacity:0.7; font-weight:800;\">#${r.from}</span></div>
+                                        <div style="font-size:0.78rem; color: rgba(255,255,255,0.45);">Bạn đồng ý thì mới dùng nhật ký chung</div>
+                                    </div>
+                                    <div style="display:flex; gap:8px; flex-shrink:0;">
+                                        <button type="button" class="btn-save" onclick="acceptPartner('${r.from}')" style="width:auto; padding:10px 12px; border-radius: 14px;">Đồng ý</button>
+                                        <button type="button" class="btn-save" onclick="declinePartner('${r.from}')" style="width:auto; padding:10px 12px; border-radius: 14px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);">Từ chối</button>
+                                    </div>
+                                </div>
+                            `;
+                        })
+                        .join('');
+                } else {
+                    incomingBox.style.display = 'none';
+                    incomingList.innerHTML = '';
+                }
+            }
+        }
+
+        function acceptPartner(fromUid) {
+            if (!currentUser) return;
+            const result = DB.acceptPartnerRequest(currentUser.uid, fromUid);
+            if (result.success) {
+                const newUser = DB.findUserByUID(currentUser.uid);
+                if (newUser) Auth.setSession(newUser);
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+            refreshPartnerUI();
+        }
+
+        function declinePartner(fromUid) {
+            if (!currentUser) return;
+            const result = DB.declinePartnerRequest(currentUser.uid, fromUid);
+            if (result.success) {
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+            refreshPartnerUI();
+        }
+
+        document.getElementById('btn-send-request').addEventListener('click', () => {
+            if (!currentUser) return;
+            const input = document.getElementById('setting-partner-id');
+            const partnerUid = (input ? input.value : '').trim();
+            if (!partnerUid) {
+                showToast('Vui lòng nhập ID người yêu.', 'error');
+                return;
+            }
+            if (!/^\d{6}$/.test(partnerUid)) {
+                showToast('ID phải gồm 6 chữ số.', 'error');
+                return;
+            }
+
+            const result = DB.requestPartner(currentUser.uid, partnerUid);
+            if (result.success) {
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+            refreshPartnerUI();
+        });
+
+        document.getElementById('btn-cancel-request').addEventListener('click', () => {
+            if (!currentUser) return;
+            const result = DB.cancelPartnerRequest(currentUser.uid);
+            if (result.success) {
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+            refreshPartnerUI();
+        });
+
+        document.getElementById('btn-disconnect').addEventListener('click', () => {
+            if (!currentUser) return;
+            const result = DB.clearPartner(currentUser.uid);
+            if (result.success) {
+                const newUser = DB.findUserByUID(currentUser.uid);
+                if (newUser) Auth.setSession(newUser);
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+            refreshPartnerUI();
+        });
+
+        refreshPartnerUI();
+
+        // Fill form
+        document.getElementById('setting-ten-nam').value = config.ten_nam;
+        document.getElementById('setting-ten-nu').value = config.ten_nu;
+
+        if (config.ngay_bat_dau) {
+            const ngayYeuDate = new Date(config.ngay_bat_dau);
+            if (!isNaN(ngayYeuDate.getTime())) {
+                const formatted = ngayYeuDate.getFullYear() + '-' + 
+                    String(ngayYeuDate.getMonth()+1).padStart(2,'0') + '-' +
+                    String(ngayYeuDate.getDate()).padStart(2,'0') + 'T' +
+                    String(ngayYeuDate.getHours()).padStart(2,'0') + ':' +
+                    String(ngayYeuDate.getMinutes()).padStart(2,'0');
+                document.getElementById('setting-ngay-yeu').value = formatted;
+            }
+        }
+
+        if (currentUser && currentUser.role) {
+            document.getElementById('setting-role').value = currentUser.role;
+        }
+
+        // Load existing avatars
+        if (config.avt_nam) {
+            document.getElementById('avt-nam-preview').src = config.avt_nam;
+        }
+        if (config.avt_nu) {
+            document.getElementById('avt-nu-preview').src = config.avt_nu;
+        }
+
+        // Load existing BG preview
+        if (config.anh_nen && config.anh_nen.startsWith('data:')) {
+            document.getElementById('bg-preview').src = config.anh_nen;
+            document.getElementById('bg-preview').style.display = 'block';
+            document.getElementById('bg-upload-content').innerHTML = '<div class="upload-text">Nhấn để đổi ảnh nền khác</div>';
+        }
+
+        // State for new avatar/bg data
+        let newAvtNam = null;
+        let newAvtNu = null;
+        let newBgData = null;
+
+        function previewAvatar(input, previewId, role) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Ảnh quá lớn! Tối đa 2MB.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewId).src = e.target.result;
+                if (role === 'nam') newAvtNam = e.target.result;
+                else newAvtNu = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewBg(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Ảnh quá lớn! Tối đa 2MB.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                newBgData = e.target.result;
+                const preview = document.getElementById('bg-preview');
+                preview.src = newBgData;
+                preview.style.display = 'block';
+                document.getElementById('bg-upload-content').innerHTML = '<div class="upload-text">✅ Đã chọn! Nhấn để đổi ảnh khác</div>';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleSaveSetting(e) {
+            e.preventDefault();
+
+            const newConfig = {
+                ten_nam: document.getElementById('setting-ten-nam').value.trim(),
+                ten_nu: document.getElementById('setting-ten-nu').value.trim(),
+                ngay_bat_dau: document.getElementById('setting-ngay-yeu').value + ':00',
+                anh_nen: newBgData || config.anh_nen,
+                avt_nam: newAvtNam || config.avt_nam || '',
+                avt_nu: newAvtNu || config.avt_nu || ''
+            };
+
+            DB.saveConfig(newConfig);
+
+            // Cập nhật vai trò & avatar cho tài khoản hiện tại
+            const newRole = document.getElementById('setting-role').value;
+            if (currentUser) {
+                const users = DB.getUsers();
+                const uIndex = users.findIndex(u => u.uid === currentUser.uid);
+                if (uIndex > -1) {
+                    users[uIndex].role = newRole;
+                    // Không gán cứng users[uIndex].avatar nữa để hệ thống getRealAvatar() có thể tự tính toán dựa trên Role
+                    DB.saveUsers(users);
+                    Auth.setSession(users[uIndex]);
+                }
+            }
+
+            // Update background immediately
+            if (newConfig.anh_nen) {
+                document.body.style.backgroundImage = `url('${newConfig.anh_nen}')`;
+            }
+
+            // Render lại header nếu có
+            if (typeof renderHeaderAvatar === 'function') {
+                renderHeaderAvatar(); 
+            }
+
+            showToast('Đã lưu thay đổi thành công! ✨', 'success');
+        }
+
+        function copyMyUID() {
+            if (currentUser) {
+                navigator.clipboard.writeText(currentUser.uid).then(() => {
+                    showToast('Đã sao chép ID: ' + currentUser.uid, 'success');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

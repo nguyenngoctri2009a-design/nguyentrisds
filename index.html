@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chào mừng bạn | Đếm Ngày Yêu VIP</title>
+    <meta name="description" content="Đếm Ngày Yêu VIP - Ứng dụng đếm ngày yêu dành cho các cặp đôi">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0a0a0f;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.45;
+            z-index: -1;
+            transform: translate3d(0, 0, 0);
+            animation: blobFloat 14s ease-in-out infinite;
+        }
+
+        body::before {
+            left: -160px;
+            top: -140px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 107, 129, 0.9), rgba(168, 85, 247, 0.15) 60%, rgba(10, 10, 15, 0) 75%);
+        }
+
+        body::after {
+            right: -180px;
+            bottom: -160px;
+            background: radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.65), rgba(168, 85, 247, 0.15) 55%, rgba(10, 10, 15, 0) 75%);
+            animation-delay: -6s;
+        }
+
+        .bg-animated {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #0a0a1a, #1a0520, #0d1b2a, #1a0a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -2;
+        }
+
+        .hearts-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .hearts-bg .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: heartRise linear infinite;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 20px;
+            animation: fadeInScale 0.8s ease forwards;
+        }
+
+        .logo-section { margin-bottom: 30px; }
+
+        .logo-heart {
+            font-size: 3.5rem;
+            display: inline-block;
+            animation: pulseGlow 2s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+
+        .logo-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            background: var(--gradient-love);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: 35px 30px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+        }
+
+        .auth-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient-love);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-full);
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-base);
+            font-family: var(--font-main);
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-love);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.3);
+        }
+
+        .tab-btn:not(.active):hover {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .form-box {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .form-box.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .form-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group { position: relative; }
+
+        .input-group::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(255, 107, 129, 0.18), rgba(168, 85, 247, 0.12));
+            opacity: 0;
+            transition: var(--transition-base);
+            pointer-events: none;
+        }
+
+        .input-group:focus-within::before {
+            opacity: 1;
+        }
+
+        .input-group .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 2;
+            transition: var(--transition-base);
+        }
+
+        .input-group:focus-within .input-icon {
+            opacity: 0.9;
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        .input-group input { padding-left: 45px; }
+
+        .input-group input {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-box .btn-primary {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.05rem;
+            margin-top: 8px;
+        }
+
+        .login-footnote {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+            letter-spacing: 0.2px;
+        }
+
+        .login-footnote b {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 700;
+        }
+
+        @media (max-width: 480px) {
+            .login-container { padding: 15px; }
+            .auth-card { padding: 25px 20px; }
+            .logo-title { font-size: 2rem; }
+            .logo-heart { font-size: 2.5rem; }
+        }
+
+        @keyframes blobFloat {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(40px, 28px, 0) scale(1.05); }
+            100% { transform: translate3d(0, 0, 0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+    <div class="hearts-bg" id="hearts-bg"></div>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-heart">❤️</div>
+            <h1 class="logo-title">Đếm Ngày Yêu</h1>
+            <p class="logo-subtitle">Lưu giữ mọi khoảnh khắc</p>
+        </div>
+
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="tab-login" onclick="showForm('login')">Đăng Nhập</button>
+                <button class="tab-btn" id="tab-register" onclick="showForm('register')">Đăng Ký</button>
+            </div>
+
+            <div id="login-form" class="form-box active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="login-username" placeholder="Tên đăng nhập / ID 6 số" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="login-password" placeholder="Mật khẩu" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Vào Thế Giới Yêu ❤️</button>
+                </form>
+            </div>
+
+            <div id="register-form" class="form-box">
+                <form onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <span class="input-icon">✨</span>
+                        <input type="text" id="reg-username" placeholder="Tên của bạn" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="reg-password" placeholder="Mật khẩu bí mật" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Tạo Tài Khoản ✨</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="login-footnote">tạo tài khoản để lưu ngày yêu ❤️</div>
+    </div>
+
+    <!-- Load JS Modules -->
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+
+    <script>
+        // Nếu đã login, chuyển thẳng home
+        if (Auth.isLoggedIn()) {
+            window.location.href = 'home.html';
+        }
+
+        function showForm(type) {
+            document.querySelectorAll('.form-box').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(type + '-form').classList.add('active');
+            document.getElementById('tab-' + type).classList.add('active');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            const result = Auth.login(username, password);
+            if (result.success) {
+                window.location.href = 'home.html';
+            } else {
+                showToast(result.message, 'error');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            
+            const result = Auth.register(username, password);
+            if (result.success) {
+                showToast(result.message, 'success');
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1000);
+            } else {
+                showToast(result.message, 'error');
+            }
+        }
+
+        function showToast(message, type) {
+            document.querySelectorAll('.toast-alert').forEach(t => t.remove());
+            const toast = document.createElement('div');
+            toast.className = 'toast-alert toast-' + type;
+            const icons = { success: '✅', error: '⚠️', info: '💡' };
+            toast.innerHTML = `<span>${icons[type] || '💡'} ${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                toast.style.transition = '0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+
+        // Floating hearts
+        (function() {
+            const container = document.getElementById('hearts-bg');
+            const hearts = ['❤️', '💕', '💖', '💗', '💝', '🩷', '🤍'];
+            for (let i = 0; i < 15; i++) {
+                const h = document.createElement('span');
+                h.className = 'heart';
+                h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                h.style.left = Math.random() * 100 + '%';
+                h.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                h.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                h.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(h);
+            }
+        })();
+    </script>
+</body>
+</html>

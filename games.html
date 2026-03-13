@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Cặp Đôi - Đếm Ngày Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/games.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <div id="header-placeholder"></div>
+
+    <div class="app-container">
+        <!-- Coin Display (Fixed Top Right) -->
+        <div class="header-coins" style="position: absolute; top: 70px; right: 20px; background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; font-size: 1rem; color: #ffd700; font-weight: 700; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 215, 0, 0.3); z-index: 90; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <i class="fas fa-coins"></i> <span id="header-user-coins">0</span>
+        </div>
+
+        <h1 class="page-title">Trò Chơi Cộng Đồng</h1>
+        <p class="page-subtitle">Cùng chơi để giải stress ❤️</p>
+
+        <div class="games-grid">
+            <!-- Daily Gift -->
+            <div class="game-card" id="daily-gift-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #ff9966, #ff5e62); border: none; cursor: pointer;">
+                <div class="game-icon" style="background: rgba(255,255,255,0.2);">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="game-info">
+                    <h3 style="color: white;">Điểm Danh Nhận Quà</h3>
+                    <p style="color: rgba(255,255,255,0.9);">Nhận ngẫu nhiên 1-500 xu mỗi ngày!</p>
+                    <span class="game-tag active" style="background: #ffd700; color: #1a1a2e;">HOT</span>
+                </div>
+                <div class="game-arrow"><i class="fas fa-chevron-right" style="color: white;"></i></div>
+            </div>
+            
+            <!-- DEBUG: Reset Daily Gift (Remove in production) -->
+            <div style="grid-column: 1 / -1; text-align: center;">
+                <button id="btn-reset-daily" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #a0aec0; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; cursor: pointer;">
+                    <i class="fas fa-sync"></i> Reset ngày (Test)
+                </button>
+            </div>
+
+            <!-- Game: Online Lobby (Community) -->
+            <a href="lobby.html" class="game-card community-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #667eea, #764ba2); border: none;">
+                <div class="game-icon" style="background: rgba(255,255,255,0.2);">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="game-info">
+                    <h3 style="color: white;">Đấu Trường Online</h3>
+                    <p style="color: rgba(255,255,255,0.8);">Thách đấu tất cả người dùng trong cộng đồng. Có đặt cược!</p>
+                    <span class="game-tag active" style="background: #4ecdc4; color: #1a1a2e;">MỚI</span>
+                </div>
+                <div class="game-arrow"><i class="fas fa-chevron-right" style="color: white;"></i></div>
+            </a>
+
+            <!-- Game: Nối Từ -->
+            <a href="noitu.html" class="game-card">
+                <div class="game-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
+                    <i class="fas fa-sort-alpha-down"></i>
+                </div>
+                <div class="game-info">
+                    <h3>Nối Từ</h3>
+                    <p>Thử thách vốn từ vựng và sự nhanh nhạy cùng người ấy.</p>
+                    <span class="game-tag active">Đang hoạt động</span>
+                </div>
+                <div class="game-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <!-- Game: Caro -->
+            <a href="caro.html" class="game-card">
+                <div class="game-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+                    <i class="fas fa-border-all"></i>
+                </div>
+                <div class="game-info">
+                    <h3>Cờ Caro</h3>
+                    <p>Trò chơi kinh điển X - O. Ai sẽ là người chiến thắng?</p>
+                    <span class="game-tag active">Đang hoạt động</span>
+                </div>
+                <div class="game-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <!-- Game: Quiz (Placeholder) -->
+            <div class="game-card disabled" onclick="alert('Tính năng đang phát triển!')">
+                <div class="game-icon" style="background: linear-gradient(135deg, #84fab0, #8fd3f4);">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="game-info">
+                    <h3>Quiz Tình Yêu</h3>
+                    <p>Trả lời câu hỏi để xem độ hiểu nhau đến đâu nhé.</p>
+                    <span class="game-tag coming-soon">Sắp ra mắt</span>
+                </div>
+            </div>
+
+            <!-- Game: Truth or Dare (Placeholder) -->
+            <div class="game-card disabled" onclick="alert('Tính năng đang phát triển!')">
+                <div class="game-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                    <i class="fas fa-dice"></i>
+                </div>
+                <div class="game-info">
+                    <h3>Thật hay Thách</h3>
+                    <p>Những bí mật thầm kín hay thử thách táo bạo?</p>
+                    <span class="game-tag coming-soon">Sắp ra mắt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div id="footer-placeholder"></div>
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        Auth.requireAuth();
+
+        // Update coins immediately
+        function updateGamesPageCoins() {
+            const coinEl = document.getElementById('header-user-coins');
+            if (coinEl && typeof DB !== 'undefined') {
+                const currentUser = Auth.getCurrentUser();
+                coinEl.textContent = DB.getCoins(currentUser.uid);
+            }
+        }
+        
+        setInterval(updateGamesPageCoins, 2000);
+        document.addEventListener('DOMContentLoaded', updateGamesPageCoins);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const giftCard = document.getElementById('daily-gift-card');
+            const btnResetDaily = document.getElementById('btn-reset-daily');
+            
+            // DEBUG BUTTON
+            if (btnResetDaily) {
+                btnResetDaily.addEventListener('click', () => {
+                    DB.saveDailyClaims([]);
+                    alert('Đã reset dữ liệu điểm danh! Bạn có thể nhận lại.');
+                    location.reload();
+                });
+            }
+            
+            // Check if already claimed to update UI (optional, maybe dim it)
+            // But getting IP requires fetch, so we might wait for click or check stored local "last_claimed_ip" if we want to be fancy.
+            // For now, let's just handle click.
+            
+            giftCard.addEventListener('click', async () => {
+                giftCard.style.opacity = '0.7';
+                giftCard.style.pointerEvents = 'none';
+                
+                try {
+                    // 1. Get IP
+                    const res = await fetch('https://api.ipify.org?format=json');
+                    const data = await res.json();
+                    const ip = data.ip;
+                    
+                    const currentUser = Auth.getCurrentUser();
+                    
+                    // 2. Check DB
+                    if (DB.hasClaimedToday(ip, currentUser.uid)) {
+                        alert('Hôm nay bạn đã nhận quà rồi! Hãy quay lại vào ngày mai nhé.');
+                        giftCard.style.opacity = '1';
+                        giftCard.style.pointerEvents = 'auto';
+                        return;
+                    }
+                    
+                    // 3. Random Reward
+                    const reward = Math.floor(Math.random() * 500) + 1;
+                    
+                    // 4. Claim
+                    DB.claimDailyGift(ip, currentUser.uid, reward);
+                    
+                    alert(`Chúc mừng! Bạn đã nhận được ${reward} xu.`);
+                    
+                    // Update header coin display if it exists (it's loaded dynamically in header.html, might need a refresh or event)
+                    // Reload page to reflect coins in header is simplest
+                    location.reload();
+                    
+                } catch (err) {
+                    console.error(err);
+                    alert('Có lỗi xảy ra khi kiểm tra thông tin. Vui lòng thử lại sau!');
+                    giftCard.style.opacity = '1';
+                    giftCard.style.pointerEvents = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Nối Từ - Đếm Ngày Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/games-common.css">
+    <link rel="stylesheet" href="assets/css/noitu.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <a href="games.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+                <h1>Nối Từ Cặp Đôi</h1>
+            </div>
+            <div class="header-actions">
+                <button id="btn-reset-game" title="Chơi lại" style="margin-right: 10px;"><i class="fas fa-redo"></i></button>
+                <div class="coin-display">
+                    <i class="fas fa-coins"></i> <span id="user-coins">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Betting Modal -->
+        <div class="betting-overlay" id="betting-overlay">
+            <div class="betting-card">
+                <h2>Đặt Cược Nối Từ</h2>
+                <div class="current-balance">
+                    Hiện có: <span id="modal-user-coins" style="color: #ffd700;">0</span> xu
+                </div>
+                
+                <div class="bet-controls-large">
+                    <button class="btn-large-adjust minus"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="bet-amount-large" value="0" min="0" step="10" class="bet-input-large">
+                    <button class="btn-large-adjust plus"><i class="fas fa-plus"></i></button>
+                </div>
+
+                <div class="chip-grid">
+                    <button class="chip-large" data-val="10">+10</button>
+                    <button class="chip-large" data-val="50">+50</button>
+                    <button class="chip-large" data-val="100">+100</button>
+                    <button class="chip-large" data-val="All">All-in</button>
+                </div>
+
+                <button id="btn-confirm-bet" class="btn-large-confirm">BẮT ĐẦU CHƠI</button>
+                <button id="btn-back-bet" class="btn-large-back">QUAY LẠI</button>
+            </div>
+        </div>
+
+        <!-- In-game Bet Info -->
+        <div class="ingame-bet-info" id="ingame-bet-info" style="display: none;">
+            Cược: <span id="current-bet-display">0</span> xu
+        </div>
+
+        <!-- Game Area -->
+        <main class="game-area">
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">Điểm số</span>
+                    <span class="value" id="score-value">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">Thời gian</span>
+                    <span class="value" id="timer-value" style="color: #4ecdc4;">--</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">Lượt chơi</span>
+                    <span class="value" id="turn-value">--</span>
+                </div>
+            </div>
+
+            <div class="current-word-display">
+                <div class="hint-text">Từ hiện tại:</div>
+                <div class="word-box" id="current-word">???</div>
+            </div>
+
+            <div class="history-container" id="history-list">
+                <!-- Lịch sử các từ đã nối -->
+                <div class="empty-state">Chưa có từ nào được nối. Hãy bắt đầu!</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="word-input" placeholder="Nhập từ tiếp theo..." autocomplete="off">
+                <button id="btn-submit"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <p class="error-message" id="error-msg"></p>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Home</span>
+            </a>
+            <a href="messenger.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>Chat</span>
+            </a>
+            <a href="nhatki.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Nhật Ký</span>
+            </a>
+            <a href="congdong.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Cộng Đồng</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Cài Đặt</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/noitu.js"></script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+.game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    padding-bottom: 80px; /* Space for input and nav */
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.score-item .label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.score-item .value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #f8fafc;
+}
+
+#score-value { color: #ffd700; }
+#timer-value { color: #4ecdc4; font-family: monospace; }
+#turn-value { color: #ff6b6b; font-size: 1rem; }
+
+.current-word-display {
+    text-align: center;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.hint-text {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.word-box {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #4ecdc4;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+    padding: 15px 30px;
+    background: rgba(78, 205, 196, 0.1);
+    border: 2px solid rgba(78, 205, 196, 0.3);
+    border-radius: 20px;
+    display: inline-block;
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.word-box:hover {
+    transform: scale(1.02);
+}
+
+.history-container {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-item {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.history-item.mine {
+    background: linear-gradient(90deg, rgba(78, 205, 196, 0.1), transparent);
+    border-left: 4px solid #4ecdc4;
+}
+
+.history-item.partner {
+    background: linear-gradient(90deg, rgba(255, 107, 107, 0.1), transparent);
+    border-left: 4px solid #ff6b6b;
+}
+
+.history-item .word {
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+.history-item .user {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+    margin-top: 20px;
+}
+
+.input-area {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-area input {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    outline: none;
+}
+
+.input-area input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 400;
+}
+
+.input-area button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #4ecdc4, #26a69a);
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(78, 205, 196, 0.3);
+    transition: all 0.2s;
+}
+
+.input-area button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(78, 205, 196, 0.4);
+}
+
+.input-area button:active {
+    transform: scale(0.95);
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    text-align: center;
+    min-height: 24px;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.back-btn {
+    color: #fff;
+    font-size: 1.2rem;
+    text-decoration: none;
+}

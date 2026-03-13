@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Caro - Đếm Ngày Yêu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/games-common.css">
+    <link rel="stylesheet" href="assets/css/caro.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <a href="games.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+                <h1>Cờ Caro</h1>
+            </div>
+            <div class="header-actions">
+                <button id="btn-reset-game" title="Chơi lại" style="margin-right: 10px;"><i class="fas fa-redo"></i></button>
+                <div class="coin-display" id="user-coin-display-container">
+                    <i class="fas fa-coins"></i> <span id="user-coins">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corner Countdown -->
+        <div id="corner-countdown" class="corner-countdown" style="display: none;">
+            <div class="corner-countdown-label">CƯỢC TIẾP TRONG</div>
+            <div id="corner-countdown-number" class="corner-countdown-number">10</div>
+        </div>
+
+        <!-- Betting Modal -->
+        <div class="betting-overlay" id="betting-overlay">
+            <div class="betting-card">
+                <h2>Đặt Cược</h2>
+                <div class="current-balance">
+                    Hiện có: <span id="modal-user-coins" style="color: #ffd700;">0</span> xu
+                </div>
+                
+                <div class="bet-controls-large">
+                    <button class="btn-large-adjust minus"><i class="fas fa-minus"></i></button>
+                    <input type="number" id="bet-amount-large" value="0" min="0" step="10" class="bet-input-large">
+                    <button class="btn-large-adjust plus"><i class="fas fa-plus"></i></button>
+                </div>
+
+                <div class="chip-grid">
+                    <button class="chip-large" data-val="10">+10</button>
+                    <button class="chip-large" data-val="50">+50</button>
+                    <button class="chip-large" data-val="100">+100</button>
+                    <button class="chip-large" data-val="All">All-in</button>
+                </div>
+
+                <button id="btn-confirm-bet" class="btn-large-confirm">BẮT ĐẦU CHƠI</button>
+                <button id="btn-back-bet" class="btn-large-back">QUAY LẠI</button>
+            </div>
+        </div>
+
+        <!-- In-game Bet Info -->
+        <div class="ingame-bet-info" id="ingame-bet-info" style="display: none;">
+            Cược: <span id="current-bet-display">0</span> xu
+        </div>
+
+        <!-- Spectator Info -->
+        <div class="spectator-info" id="spectator-info" style="display: none;">
+            <div class="live-status-bar">
+                <div class="live-status-item">
+                    <span class="live-dot"></span>
+                    <span class="live-text">TRỰC TIẾP</span>
+                </div>
+                <div class="live-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-eye"></i>
+                        <span id="watch-viewers">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-coins"></i>
+                        <span id="betting-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spectator Active Bet Display -->
+        <div class="spectator-active-bet" id="spectator-active-bet" style="display: none;">
+            <div class="spec-active-bet-content">
+                <i class="fas fa-coins" style="color: #ffd700;"></i> Đã cược <span id="spec-onscreen-amount" class="highlight-amount">0</span> xu vào <span id="spec-onscreen-choice" class="highlight-choice">---</span>
+            </div>
+        </div>
+
+        <!-- Spectator Betting Modal -->
+        <div class="spec-bet-overlay" id="spec-bet-overlay" style="display: none;">
+            <div class="spec-bet-panel">
+                <div class="spec-bet-header">
+                    <i class="fas fa-dice"></i> Đặt Kèo Trận Này
+                    <span class="spec-bet-coins"><i class="fas fa-coins"></i> <span id="spec-coins">0</span></span>
+                </div>
+                
+                <!-- Chọn kèo -->
+                <div class="spec-bet-options" id="spec-bet-options">
+                    <button class="spec-bet-choice" data-choice="tai" id="btn-bet-tai">
+                        <span class="choice-icon">🔵</span>
+                        <span class="choice-label">TÀI</span>
+                        <span class="choice-desc" id="tai-name">X thắng</span>
+                        <span class="choice-rate">x2</span>
+                    </button>
+                    <button class="spec-bet-choice" data-choice="xiu" id="btn-bet-xiu">
+                        <span class="choice-icon">🔴</span>
+                        <span class="choice-label">XỈU</span>
+                        <span class="choice-desc" id="xiu-name">O thắng</span>
+                        <span class="choice-rate">x2</span>
+                    </button>
+                    <button class="spec-bet-choice" data-choice="hoa" id="btn-bet-hoa">
+                        <span class="choice-icon">⚖️</span>
+                        <span class="choice-label">HÒA</span>
+                        <span class="choice-desc">Không ai thắng</span>
+                        <span class="choice-rate">x5</span>
+                    </button>
+                </div>
+
+                <div id="spec-initial-actions" style="margin-top: 20px;">
+                    <button class="spec-cancel-btn" id="spec-no-bet">KHÔNG ĐẶT</button>
+                </div>
+
+                <!-- Nhập số xu -->
+                <div class="spec-bet-amount-row" id="spec-bet-amount-row" style="display: none;">
+                    <div class="spec-bet-selected" id="spec-bet-selected-label">Đã chọn: ---</div>
+                    <div class="spec-bet-input-group">
+                        <button class="spec-adj" id="spec-minus">-</button>
+                        <input type="number" id="spec-bet-input" value="10" min="1">
+                        <button class="spec-adj" id="spec-plus">+</button>
+                    </div>
+                    <div class="spec-chip-row">
+                        <button class="spec-chip" data-val="10">+10</button>
+                        <button class="spec-chip" data-val="50">+50</button>
+                        <button class="spec-chip" data-val="100">+100</button>
+                        <button class="spec-chip" data-val="All">All-in</button>
+                    </div>
+                    <button class="spec-confirm-btn" id="spec-confirm-bet"><i class="fas fa-check"></i> XÁC NHẬN CƯỢC</button>
+                    <button class="spec-cancel-btn" id="spec-cancel-bet">ĐÓNG</button>
+                </div>
+
+                <!-- Đã cược xong -->
+                <div class="spec-bet-active" id="spec-bet-active" style="display: none;">
+                    <div class="spec-bet-active-info">
+                        <span>Đã cược <strong id="spec-active-amount">0</strong> xu vào <strong id="spec-active-choice">---</strong></span>
+                    </div>
+                    <div class="spec-bet-potential">
+                        Nếu trúng: <span class="spec-win-amount" id="spec-potential-win">+0 xu</span>
+                    </div>
+                    <button class="spec-cancel-btn" style="margin-top: 15px;" id="spec-close-active">ĐÓNG</button>
+                </div>
+
+                <!-- Kết quả -->
+                <div class="spec-bet-result" id="spec-bet-result" style="display: none;">
+                    <div id="spec-result-text"></div>
+                    <button class="spec-cancel-btn" style="margin-top: 15px;" id="spec-close-result">ĐÓNG</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <main class="game-area">
+            <div class="score-board">
+                <div class="player-card" id="player-x">
+                    <div class="avatar-wrapper">
+                        <img id="avt-x" src="https://i.imgur.com/6VBx3io.png" alt="X">
+                        <span class="symbol x">X</span>
+                    </div>
+                    <div class="player-name" id="name-x">Bạn</div>
+                    <div class="score" id="score-x">0</div>
+                </div>
+                
+                <div class="vs-badge">VS</div>
+
+                <div class="player-card" id="player-o">
+                    <div class="avatar-wrapper">
+                        <img id="avt-o" src="https://i.imgur.com/6VBx3io.png" alt="O">
+                        <span class="symbol o">O</span>
+                    </div>
+                    <div class="player-name" id="name-o">Người ấy</div>
+                    <div class="score" id="score-o">0</div>
+                </div>
+            </div>
+
+            <div class="turn-indicator" id="turn-indicator">
+                Lượt của <span id="current-turn-name">...</span> (<span id="current-symbol">X</span>)
+            </div>
+
+            <div class="board-container">
+                <div class="game-board" id="game-board">
+                    <!-- Cells will be generated by JS -->
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                </div>
+                
+                <div class="winning-line" id="winning-line"></div>
+            </div>
+
+            <div id="big-win-display" class="big-win-display" style="display: none;">
+                <div class="big-win-content">
+                    <div class="big-win-label">BẠN ĐÃ THẮNG</div>
+                    <div id="big-win-amount" class="big-win-amount">+0</div>
+                    <div class="big-win-coins">XU</div>
+                </div>
+            </div>
+
+            <div class="game-status" id="game-status"></div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="home.html" class="nav-item">
+                <i class="fas fa-heart"></i>
+                <span>Home</span>
+            </a>
+            <a href="messenger.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>Chat</span>
+            </a>
+            <a href="nhatki.html" class="nav-item">
+                <i class="fas fa-book"></i>
+                <span>Nhật Ký</span>
+            </a>
+            <a href="games.html" class="nav-item active">
+                <i class="fas fa-gamepad"></i>
+                <span>Trò Chơi</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Cài Đặt</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/caro.js"></script>
+</body>
+</html>

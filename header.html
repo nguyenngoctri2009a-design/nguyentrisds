@@ -1,0 +1,38 @@
+<!-- header.html - Loaded via fetch by main.js -->
+<nav class="nav-bar">
+    <div class="nav-inner">
+        <a href="home.html" class="nav-brand">
+            <span class="brand-heart">❤️</span> Đếm Ngày Yêu
+        </a>
+
+        <!-- Vị trí đối phương -->
+        <div id="partner-location-badge" class="partner-location-badge" style="display: none;">
+            <!-- Render via main.js -->
+        </div>
+
+        <button class="nav-toggle" onclick="toggleMenu()" id="nav-toggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+
+        <div class="nav-links" id="nav-links">
+            <a href="home.html">🏠 Trang Chủ</a>
+            <a href="nhatki.html">📖 Nhật Ký</a>
+            <a href="games.html">🎮 Trò Chơi</a>
+            <a href="congdong.html">🌍 Cộng Đồng</a>
+            <a href="messenger.html">💬 Tin Nhắn</a>
+            <a href="setting.html">⚙️ Cài Đặt</a>
+            <a href="#" onclick="Auth.logout(); return false;" class="logout-btn">🚪 Đăng Xuất</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+    const nav = document.getElementById('nav-links');
+    const toggle = document.getElementById('nav-toggle');
+    if (nav && toggle && !nav.contains(e.target) && !toggle.contains(e.target)) {
+        nav.classList.remove('open');
+    }
+});
+</script>
